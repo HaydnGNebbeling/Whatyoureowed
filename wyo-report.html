@@ -776,62 +776,161 @@ function checkEmail() {
 
 // ── GENERATE REPORT
 function generateReport() {
-  const email = document.getElementById('user-email').value;
-  if (!email || !email.includes('@')) return;
+  const emailInput = document.getElementById('user-email');
+  const email = emailInput ? emailInput.value.trim() : '';
 
-  // Store email (in production: POST to Kit/Mailchimp)
-  sessionStorage.setItem('wyo_email', email);
+  // Show loading regardless
+  const loadingWrap = document.getElementById('loading-wrap');
+  const emailWrap = document.querySelector('.email-wrap');
+  if (loadingWrap) loadingWrap.style.display = 'flex';
+  if (emailWrap) {
+    emailWrap.style.opacity = '0.5';
+    emailWrap.style.pointerEvents = 'none';
+  }
 
-  // Show loading
-  document.getElementById('loading-wrap').style.display = 'flex';
-  document.querySelector('.email-wrap').style.opacity = '0.5';
-  document.querySelector('.email-wrap').style.pointerEvents = 'none';
+  try {
+    // Store email
+    if (email) sessionStorage.setItem('wyo_email', email);
 
-  // Build the PDF template
-  buildPDFTemplate(email);
+    // Build the PDF template
+    buildPDFTemplate(email);
 
-  // After short delay show preview + actions
-  setTimeout(() => {
-    document.getElementById('loading-wrap').style.display = 'none';
-    showPreviewAndActions();
-  }, 2000);
+    // After short delay show preview + actions
+    setTimeout(() => {
+      if (loadingWrap) loadingWrap.style.display = 'none';
+      showPreviewAndActions();
+    }, 1500);
+  } catch(err) {
+    console.error('Generate error:', err);
+    if (loadingWrap) loadingWrap.style.display = 'none';
+    if (emailWrap) {
+      emailWrap.style.opacity = '1';
+      emailWrap.style.pointerEvents = 'auto';
+    }
+    alert('Something went wrong generating your report. Please try again.');
+  }
+}
+
+// ── DOCUMENTS NEEDED PER ENTITLEMENT
+const docsNeeded = {
+  "Carer's Allowance": ["National Insurance number", "Bank details", "Details of person you care for", "Payslips if working"],
+  "Personal Independence Payment (PIP)": ["National Insurance number", "GP contact details", "Medical letters", "Bank details"],
+  "Sure Start Maternity Grant": ["Benefit award letter", "Bank details", "Midwife signature on form"],
+  "Free NHS Prescriptions": ["Benefit award letter", "FP92A from GP (medical condition)", "FW8 from midwife (pregnancy)"],
+  "Free NHS Dental Treatment": ["Benefit award letter", "NHS exemption certificate"],
+  "Healthy Start Vouchers": ["Proof of pregnancy", "Proof of qualifying benefit"],
+  "Universal Credit": ["National Insurance number", "Bank details", "Proof of identity", "Rent agreement", "Payslips"],
+  "Warm Home Discount": ["No application needed if automatic", "Or contact your energy supplier"],
+  "Council Tax Support": ["Council tax bill", "Proof of income", "Bank statements", "Proof of address"],
+  "Free School Meals": ["Proof of qualifying benefit", "Child school details"],
+  "Child Benefit": ["Child birth certificate", "National Insurance number", "Bank details"],
+  "Child Tax Credit": ["National Insurance number", "Income details", "Child details"],
+  "Free Childcare Hours": ["National Insurance number", "Child details", "Childcare provider details"],
+  "Child Maintenance": ["Other parent details", "Child details", "Income information"],
+  "Winter Fuel Payment": ["Usually automatic if eligible", "National Insurance number"],
+  "Free Bus Pass": ["Proof of age", "Proof of address", "Passport photo"],
+  "Pension Credit": ["National Insurance number", "Bank details", "Pension statements", "Savings details"],
+  "Attendance Allowance": ["Details of condition", "GP contact details", "Bank details"],
+  "Bereavement Support Payment": ["Death certificate", "Marriage certificate", "National Insurance numbers", "Bank details"],
+  "Employment Support Allowance": ["National Insurance number", "Medical evidence", "Bank details", "Fit note from GP"],
+  "NHS Hospital Travel Costs": ["Proof of qualifying benefit", "Travel receipts", "Appointment letter"],
+  "Access to Work Grant": ["National Insurance number", "Employer details", "Details of support needed"],
+  "Disabled Facilities Grant": ["Proof of disability", "Proof of ownership or tenancy", "Quotes for work"],
+  "Blue Badge Scheme": ["Proof of disability", "Passport photo", "Proof of address", "National Insurance number"],
+  "Maintenance Loan": ["National Insurance number", "University offer letter", "Household income details"],
+  "Council Tax Exemption": ["Proof of full-time student status", "Council tax bill"],
+};
+
+// ── ANNUAL VALUE CALCULATION
+function calcAnnualValue(item) {
+  const amt = item.amount || '';
+  const period = item.period || '';
+
+  // Extract the first number from amount string
+  const match = amt.match(/[\d,]+\.?\d*/);
+  if (!match) return null;
+  const num = parseFloat(match[0].replace(',',''));
+
+  if (period.includes('per week')) return Math.round(num * 52);
+  if (period.includes('per month')) return Math.round(num * 12);
+  if (period.includes('per year') || period.includes('annually')) return Math.round(num);
+  if (period.includes('one-off') || period.includes('total')) return Math.round(num);
+  if (period.includes('per prescription')) return Math.round(num * 12); // estimate 12/year
+  if (period.includes('per child per day')) return Math.round(num * 190); // school days
+  if (period.includes('per treatment')) return Math.round(num * 4); // estimate
+  return null;
 }
 
 // ── BUILD PDF CONTENT
 function buildPDFTemplate(email) {
   const items = getEntitlements();
-  const total = getTotal();
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  // Calculate real totals
+  let totalAnnual = 0;
+  const itemsWithCalc = items.map((item, i) => {
+    const annual = calcAnnualValue(item);
+    if (annual) totalAnnual += annual;
+    return { ...item, annual, priority: i + 1 };
+  });
+
+  const totalStr = totalAnnual > 0 ? '£' + totalAnnual.toLocaleString('en-GB') : getTotal();
 
   // Fill metadata
   document.getElementById('pdf-date').textContent = dateStr;
   document.getElementById('pdf-count').textContent = items.length + ' found';
-  document.getElementById('pdf-total-cover').textContent = total;
-  document.getElementById('pdf-summary-amount').textContent = total;
+  document.getElementById('pdf-total-cover').textContent = totalStr + ' per year';
+  document.getElementById('pdf-summary-amount').textContent = totalStr;
   document.getElementById('pdf-summary-count').textContent = items.length;
-  document.getElementById('pdf-email-inline').textContent = email;
+  document.getElementById('pdf-email-inline').textContent = email || 'your inbox';
   document.getElementById('pdf-disclaimer-date').textContent = dateStr;
 
-  // Fill entitlements
+  // Fill entitlements with rich detail
   const list = document.getElementById('pdf-ents-list');
-  list.innerHTML = items.map(item => `
-    <div class="pdf-ent">
-      <div class="pdf-ent-icon">${item.icon}</div>
-      <div class="pdf-ent-main">
-        <div class="pdf-ent-title">${item.title}</div>
-        <div class="pdf-ent-desc">${item.desc}</div>
-        <div class="pdf-ent-link">How to claim → ${item.link}</div>
+  list.innerHTML = itemsWithCalc.map((item, i) => {
+    const docs = docsNeeded[item.title] || ['National Insurance number', 'Bank details', 'Proof of eligibility'];
+    const annualVal = item.annual ? '£' + item.annual.toLocaleString('en-GB') + ' per year' : item.amount + ' ' + item.period;
+
+    return `
+    <div class="pdf-ent" style="break-inside:avoid;">
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+        <div class="pdf-ent-icon" style="font-size:20px;width:32px;flex-shrink:0;">${item.icon}</div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+            <div class="pdf-ent-title" style="font-size:12px;font-weight:700;color:#3d2b1f;">${item.title}</div>
+            <div style="text-align:right;flex-shrink:0;">
+              <div style="font-family:Fraunces,serif;font-size:14px;font-weight:600;color:#7a9e7e;">${item.amount}</div>
+              <div style="font-size:9px;color:#8c7b6e;">${item.period}</div>
+            </div>
+          </div>
+          <div class="pdf-ent-desc" style="font-size:10px;color:#8c7b6e;line-height:1.6;margin:4px 0;">${item.desc}</div>
+        </div>
       </div>
-      <div class="pdf-ent-amount">
-        <strong>${item.amount}</strong>
-        <span>${item.period}</span>
+
+      <div style="background:#f5f0e8;border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+        <div style="font-size:8px;font-weight:700;letter-spacing:0.15em;color:#c4622d;text-transform:uppercase;margin-bottom:6px;">💰 ESTIMATED VALUE TO YOU</div>
+        <div style="font-family:Fraunces,serif;font-size:16px;font-weight:600;color:#3d2b1f;">${annualVal}</div>
       </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+        <div style="background:#f9f7f4;border:1px solid #e8e0d5;border-radius:6px;padding:8px 10px;">
+          <div style="font-size:8px;font-weight:700;letter-spacing:0.12em;color:#8c7b6e;text-transform:uppercase;margin-bottom:5px;">📋 DOCUMENTS NEEDED</div>
+          ${docs.map(d => `<div style="font-size:9px;color:#3d2b1f;padding:1px 0;">· ${d}</div>`).join('')}
+        </div>
+        <div style="background:#f9f7f4;border:1px solid #e8e0d5;border-radius:6px;padding:8px 10px;">
+          <div style="font-size:8px;font-weight:700;letter-spacing:0.12em;color:#8c7b6e;text-transform:uppercase;margin-bottom:5px;">🔗 HOW TO CLAIM</div>
+          <div style="font-size:9px;color:#3d2b1f;line-height:1.5;">Visit: <span style="color:#c4622d;font-weight:600;">gov.uk</span> and search for <strong>${item.title}</strong>, or call your local Jobcentre Plus for assistance.</div>
+        </div>
+      </div>
+
+      ${i < itemsWithCalc.length - 1 ? '<div style="border-bottom:1px solid #e8e0d5;margin:12px 0;"></div>' : ''}
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   // Update preview label
-  document.getElementById('preview-count-label').textContent = items.length + ' entitlements found';
+  document.getElementById('preview-count-label').textContent = items.length + ' entitlements — est. ' + totalStr + '/year';
 }
 
 // ── SHOW PREVIEW
