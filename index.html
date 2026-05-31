@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What You're Owed — Find Out What You're Entitled To</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf7f2;
+    --warm-white: #fff9f4;
+    --ink: #1a1410;
+    --brown: #3d2b1f;
+    --terracotta: #c4622d;
+    --terra-light: #e8845a;
+    --sage: #7a9e7e;
+    --sage-light: #a8c5ab;
+    --gold: #d4a843;
+    --muted: #8c7b6e;
+    --border: #e8e0d5;
+    --shadow: rgba(61,43,31,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ── TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 99;
+    padding: 1.2rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(250,247,242,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--brown);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  .nav-logo span { color: var(--terracotta); }
+
+  .nav-right {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  /* ── SCREENS ── */
+  .screen {
+    display: none;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ── HERO SCREEN ── */
+  #screen-hero {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 8rem 2rem 5rem;
+    background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(196,98,45,0.06) 0%, transparent 70%);
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(196,98,45,0.08);
+    border: 1px solid rgba(196,98,45,0.2);
+    padding: 0.45rem 1.1rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--terracotta);
+    letter-spacing: 0.05em;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: rise 0.8s 0.2s forwards;
+  }
+
+  .hero-dot {
+    width: 6px; height: 6px;
+    background: var(--terracotta);
+    border-radius: 50%;
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.8rem, 8vw, 6.5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--brown);
+    max-width: 820px;
+    margin: 0 auto 1rem;
+    opacity: 0;
+    animation: rise 0.9s 0.4s forwards;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--terracotta);
+    font-weight: 300;
+  }
+
+  .hero-body {
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    color: var(--muted);
+    max-width: 560px;
+    margin: 0 auto 3rem;
+    line-height: 1.8;
+    font-weight: 300;
+    opacity: 0;
+    animation: rise 0.9s 0.7s forwards;
+  }
+
+  .hero-body strong { color: var(--brown); font-weight: 500; }
+
+  .btn-start {
+    display: inline-block;
+    background: var(--terracotta);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 1.1rem 3rem;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    opacity: 0;
+    animation: rise 0.9s 0.9s forwards;
+    box-shadow: 0 4px 24px rgba(196,98,45,0.25);
+  }
+  .btn-start:hover {
+    background: var(--terra-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(196,98,45,0.3);
+  }
+
+  .hero-note {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+    opacity: 0;
+    animation: rise 0.9s 1.1s forwards;
+  }
+
+  /* Stats strip */
+  .stats-strip {
+    display: flex;
+    justify-content: center;
+    gap: clamp(2rem, 5vw, 5rem);
+    flex-wrap: wrap;
+    margin-top: 5rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border);
+    opacity: 0;
+    animation: rise 1s 1.3s forwards;
+  }
+
+  .stat strong {
+    font-family: 'Fraunces', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--brown);
+    display: block;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .stat span {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 0.3rem;
+    display: block;
+  }
+
+  /* ── QUESTIONNAIRE SCREEN ── */
+  #screen-quiz {
+    padding: 7rem 2rem 5rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .quiz-wrap {
+    max-width: 680px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Progress */
+  .progress-bar-wrap {
+    margin-bottom: 3rem;
+  }
+
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.7rem;
+  }
+
+  .progress-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .progress-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--terracotta);
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  /* Question */
+  .question-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 8px 40px var(--shadow);
+  }
+
+  .q-step {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--terracotta);
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+
+  .q-text {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.4rem, 3.5vw, 2rem);
+    font-weight: 400;
+    color: var(--brown);
+    line-height: 1.3;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.02em;
+  }
+
+  .q-sub {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  /* Options */
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.8rem;
+  }
+
+  .options-grid.two-col {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .opt {
+    background: var(--cream);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 1.2rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .opt:hover {
+    border-color: var(--terracotta);
+    background: rgba(196,98,45,0.04);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(196,98,45,0.12);
+  }
+
+  .opt.selected {
+    border-color: var(--terracotta);
+    background: rgba(196,98,45,0.06);
+    box-shadow: 0 4px 20px rgba(196,98,45,0.15);
+  }
+
+  .opt-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .opt-label {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--brown);
+    line-height: 1.3;
+  }
+
+  .opt-sub {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+    line-height: 1.4;
+  }
+
+  /* Nav buttons */
+  .quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+  }
+
+  .btn-back {
+    font-size: 0.85rem;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: color 0.2s;
+    padding: 0.5rem 0;
+  }
+  .btn-back:hover { color: var(--brown); }
+
+  .btn-next {
+    background: var(--terracotta);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.9rem 2.5rem;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(196,98,45,0.25);
+  }
+  .btn-next:hover {
+    background: var(--terra-light);
+    transform: translateY(-1px);
+  }
+  .btn-next:disabled {
+    background: var(--border);
+    color: var(--muted);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ── CALCULATING SCREEN ── */
+  #screen-calculating {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 5rem 2rem;
+  }
+
+  .calc-wrap { max-width: 500px; margin: 0 auto; }
+
+  .calc-spinner {
+    width: 80px;
+    height: 80px;
+    border: 3px solid var(--border);
+    border-top-color: var(--terracotta);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 2.5rem;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .calc-wrap h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--brown);
+    margin-bottom: 0.8rem;
+    letter-spacing: -0.02em;
+  }
+
+  .calc-steps {
+    list-style: none;
+    margin-top: 2rem;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .calc-step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.88rem;
+    color: var(--muted);
+    opacity: 0;
+    transition: opacity 0.5s, color 0.5s;
+  }
+
+  .calc-step-item.done { opacity: 1; color: var(--sage); }
+  .calc-step-item.active { opacity: 1; color: var(--brown); }
+
+  .calc-step-icon { font-size: 1rem; flex-shrink: 0; }
+
+  /* ── PAYWALL SCREEN ── */
+  #screen-paywall {
+    justify-content: center;
+    align-items: center;
+    padding: 7rem 2rem 5rem;
+  }
+
+  .paywall-wrap {
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .paywall-teaser {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 40px var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .paywall-teaser h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 400;
+    color: var(--brown);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+
+  .paywall-teaser h2 em { font-style: italic; color: var(--terracotta); }
+
+  .paywall-teaser .sub {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  /* Blurred preview */
+  .preview-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .preview-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    background: var(--cream);
+    border-radius: 12px;
+    text-align: left;
+    transition: filter 0.3s;
+  }
+
+  .preview-item.blurred { filter: blur(5px); user-select: none; }
+
+  .preview-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .preview-content h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--brown);
+    margin-bottom: 0.2rem;
+  }
+
+  .preview-content p {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .preview-amount {
+    margin-left: auto;
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--sage);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Blur overlay */
+  .blur-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 140px;
+    background: linear-gradient(to bottom, transparent, white);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 1rem;
+  }
+
+  .blur-overlay span {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* Total */
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.2rem;
+    background: rgba(122,158,126,0.08);
+    border: 1px solid rgba(122,158,126,0.2);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .total-row span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--brown);
+  }
+
+  .total-row strong {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--sage);
+    letter-spacing: -0.02em;
+  }
+
+  /* Payment card */
+  .payment-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 40px var(--shadow);
+    text-align: left;
+  }
+
+  .payment-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--brown);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.3rem;
+  }
+
+  .payment-sub {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 1.8rem;
+    line-height: 1.5;
+  }
+
+  .price-display {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .price-main {
+    font-family: 'Fraunces', serif;
+    font-size: 3.5rem;
+    font-weight: 600;
+    color: var(--brown);
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .price-main sup {
+    font-size: 1.5rem;
+    vertical-align: top;
+    margin-top: 0.5rem;
+    color: var(--terracotta);
+    font-weight: 400;
+  }
+
+  .price-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .what-you-get {
+    list-style: none;
+    margin-bottom: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .what-you-get li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    font-size: 0.85rem;
+    color: var(--brown);
+    line-height: 1.5;
+  }
+
+  .what-you-get li .tick {
+    color: var(--sage);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-weight: 700;
+  }
+
+  .btn-pay {
+    display: block;
+    width: 100%;
+    background: var(--terracotta);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 1.1rem;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(196,98,45,0.3);
+    margin-bottom: 0.8rem;
+  }
+  .btn-pay:hover {
+    background: var(--terra-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(196,98,45,0.35);
+  }
+
+  .secure-note {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  /* Also add subscription option */
+  .also-subscribe {
+    margin-top: 1.5rem;
+    padding: 1.2rem;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .also-subscribe:hover { border-color: var(--gold); background: rgba(212,168,67,0.03); }
+
+  .also-subscribe input[type="checkbox"] { accent-color: var(--terracotta); width: 18px; height: 18px; flex-shrink: 0; cursor: pointer; }
+
+  .also-subscribe-text { flex: 1; }
+  .also-subscribe-text strong { font-size: 0.85rem; color: var(--brown); display: block; margin-bottom: 0.2rem; }
+  .also-subscribe-text span { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
+
+  .also-subscribe-price {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+
+  /* ── RESULTS SCREEN ── */
+  #screen-results {
+    padding: 7rem 2rem 5rem;
+  }
+
+  .results-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .results-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .results-header .tag {
+    display: inline-block;
+    background: rgba(122,158,126,0.1);
+    border: 1px solid rgba(122,158,126,0.25);
+    color: var(--sage);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 0.35rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 1.2rem;
+    text-transform: uppercase;
+  }
+
+  .results-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.8rem, 4.5vw, 3rem);
+    font-weight: 400;
+    color: var(--brown);
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 0.6rem;
+  }
+
+  .results-header h2 em { font-style: italic; color: var(--terracotta); }
+
+  .results-header p {
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* Total found banner */
+  .total-found {
+    background: linear-gradient(135deg, rgba(122,158,126,0.12), rgba(122,158,126,0.04));
+    border: 1px solid rgba(122,158,126,0.25);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .total-found .amount {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.5rem, 7vw, 4.5rem);
+    font-weight: 600;
+    color: var(--sage);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  .total-found p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* Entitlement cards */
+  .entitlements {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-bottom: 3rem;
+  }
+
+  .entitlement-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.8rem;
+    box-shadow: 0 4px 20px var(--shadow);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.2rem;
+    align-items: start;
+    transition: box-shadow 0.3s, transform 0.2s;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s, transform 0.5s, box-shadow 0.2s;
+  }
+
+  .entitlement-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .entitlement-card:hover {
+    box-shadow: 0 8px 32px rgba(61,43,31,0.12);
+    transform: translateY(-2px);
+  }
+
+  .ent-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  .ent-icon.green { background: rgba(122,158,126,0.12); }
+  .ent-icon.orange { background: rgba(196,98,45,0.1); }
+  .ent-icon.gold { background: rgba(212,168,67,0.12); }
+  .ent-icon.blue { background: rgba(100,140,180,0.1); }
+  .ent-icon.purple { background: rgba(160,100,180,0.1); }
+
+  .ent-body h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--brown);
+    margin-bottom: 0.3rem;
+  }
+
+  .ent-body p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 0.6rem;
+  }
+
+  .ent-how {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--terracotta);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: gap 0.2s;
+  }
+  .ent-how:hover { gap: 0.5rem; }
+
+  .ent-amount {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .ent-amount strong {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--sage);
+    display: block;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .ent-amount span {
+    font-size: 0.7rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* Share / Download */
+  .results-actions {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+
+  .results-actions h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--brown);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.02em;
+  }
+
+  .results-actions p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .action-btns {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-action {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.85rem 1.8rem;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+  }
+
+  .btn-action.primary {
+    background: var(--terracotta);
+    color: white;
+    box-shadow: 0 4px 16px rgba(196,98,45,0.25);
+  }
+  .btn-action.primary:hover { background: var(--terra-light); transform: translateY(-1px); }
+
+  .btn-action.secondary {
+    background: var(--cream);
+    color: var(--brown);
+    border: 1px solid var(--border);
+  }
+  .btn-action.secondary:hover { border-color: var(--brown); transform: translateY(-1px); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 580px) {
+    .options-grid { grid-template-columns: 1fr 1fr; }
+    .options-grid.two-col { grid-template-columns: 1fr; }
+    .question-card { padding: 2rem 1.5rem; }
+    .entitlement-card { grid-template-columns: auto 1fr; }
+    .ent-amount { display: none; }
+    nav { padding: 1rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo" onclick="goHome()">What You're <span>Owed</span></a>
+  <span class="nav-right">Free to check · Takes 2 minutes</span>
+</nav>
+
+<!-- ═══ SCREEN 1: HERO ═══ -->
+<section class="screen active" id="screen-hero">
+  <div class="hero-tag">
+    <div class="hero-dot"></div>
+    Millions of pounds go unclaimed every year
+  </div>
+
+  <h1>You're probably <em>owed more</em> than you know.</h1>
+
+  <p class="hero-body">
+    Benefits, grants, allowances, support payments — the system is complicated on purpose. <strong>We make it simple.</strong> Answer three questions. Find out everything you're entitled to right now.
+  </p>
+
+  <button class="btn-start" onclick="startQuiz()">Find Out What You're Owed →</button>
+  <span class="hero-note">Takes under 2 minutes · No jargon · No judgement</span>
+
+  <div class="stats-strip">
+    <div class="stat">
+      <strong>£19bn</strong>
+      <span>Unclaimed benefits in the UK each year</span>
+    </div>
+    <div class="stat">
+      <strong>8 in 10</strong>
+      <span>People entitled to support don't claim it</span>
+    </div>
+    <div class="stat">
+      <strong>2 mins</strong>
+      <span>To find out everything you're owed</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SCREEN 2: QUESTIONNAIRE ═══ -->
+<section class="screen" id="screen-quiz">
+  <div class="quiz-wrap">
+    <div class="progress-bar-wrap">
+      <div class="progress-top">
+        <span class="progress-label" id="progress-label">Question 1 of 3</span>
+        <span class="progress-label" id="progress-pct">33%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:33%"></div>
+      </div>
+    </div>
+
+    <div class="question-card" id="question-card">
+      <!-- Injected by JS -->
+    </div>
+
+    <div class="quiz-nav">
+      <button class="btn-back" id="btn-back" onclick="prevQuestion()">← Back</button>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()" disabled>Continue →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SCREEN 3: CALCULATING ═══ -->
+<section class="screen" id="screen-calculating">
+  <div class="calc-wrap">
+    <div class="calc-spinner"></div>
+    <h2>Finding what you're owed...</h2>
+    <p style="color:var(--muted);font-size:0.9rem;">Checking over 200 entitlements based on your situation</p>
+
+    <ul class="calc-steps">
+      <li class="calc-step-item" id="cs1"><span class="calc-step-icon">📋</span> Checking your situation against current legislation</li>
+      <li class="calc-step-item" id="cs2"><span class="calc-step-icon">💰</span> Calculating financial entitlements</li>
+      <li class="calc-step-item" id="cs3"><span class="calc-step-icon">🏥</span> Finding healthcare and support entitlements</li>
+      <li class="calc-step-item" id="cs4"><span class="calc-step-icon">🏠</span> Checking housing and council entitlements</li>
+      <li class="calc-step-item" id="cs5"><span class="calc-step-icon">✅</span> Building your personalised report</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══ SCREEN 4: PAYWALL ═══ -->
+<section class="screen" id="screen-paywall">
+  <div class="paywall-wrap">
+
+    <div class="paywall-teaser">
+      <h2>We found <em id="found-count">12 things</em> you're entitled to.</h2>
+      <p class="sub">Here's a preview of what's in your report. Unlock the full list to see exactly how to claim everything — including the amounts you could receive.</p>
+
+      <div class="preview-items" id="preview-items">
+        <!-- Injected by JS -->
+      </div>
+
+      <div class="total-row">
+        <span>Estimated annual value</span>
+        <strong id="total-value">£4,200+</strong>
+      </div>
+    </div>
+
+    <div class="payment-card">
+      <p class="payment-title">Unlock your full report</p>
+      <p class="payment-sub">See every entitlement, the exact amount you could receive, and step-by-step instructions to claim each one.</p>
+
+      <div class="price-display">
+        <div class="price-main"><sup>£</sup>9.99</div>
+        <div class="price-label">One-off payment<br>Yours to keep forever</div>
+      </div>
+
+      <ul class="what-you-get">
+        <li><span class="tick">✓</span> Your full personalised entitlements report</li>
+        <li><span class="tick">✓</span> Exact amounts you could receive</li>
+        <li><span class="tick">✓</span> Step-by-step claim instructions for each one</li>
+        <li><span class="tick">✓</span> Template letters and form guidance</li>
+        <li><span class="tick">✓</span> Downloadable PDF to share with family or a support worker</li>
+      </ul>
+
+      <label class="also-subscribe">
+        <input type="checkbox" id="subscribe-check">
+        <div class="also-subscribe-text">
+          <strong>Add monthly updates — £4.99/month</strong>
+          <span>Get notified when new entitlements apply to you or legislation changes that affects your report.</span>
+        </div>
+        <div class="also-subscribe-price">+ £4.99</div>
+      </label>
+
+      <br>
+      <button class="btn-pay" onclick="unlockResults()">Unlock My Full Report →</button>
+      <p class="secure-note">🔒 Secure payment · Instant access · No hidden fees</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SCREEN 5: RESULTS ═══ -->
+<section class="screen" id="screen-results">
+  <div class="results-wrap">
+    <div class="results-header">
+      <div class="tag">✓ Your Report Is Ready</div>
+      <h2>Here's everything <em>you're owed.</em></h2>
+      <p>Based on your situation we found the following entitlements. Click each one to see exactly how to claim it.</p>
+    </div>
+
+    <div class="total-found">
+      <strong class="amount" id="results-total">£4,200+</strong>
+      <p>Estimated annual value of your entitlements — most of which you could start claiming this week.</p>
+    </div>
+
+    <div class="entitlements" id="entitlements-list">
+      <!-- Injected by JS -->
+    </div>
+
+    <div class="results-actions">
+      <h3>Share this report with someone who needs it</h3>
+      <p>Know someone who might be missing out? Share this tool — it takes 2 minutes and could change their financial situation.</p>
+      <div class="action-btns">
+        <button class="btn-action primary" onclick="downloadReport()">📄 Download PDF Report</button>
+        <button class="btn-action secondary" onclick="shareReport()">🔗 Share With Someone</button>
+        <button class="btn-action secondary" onclick="startQuiz()">↩ Check For Someone Else</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// ══════════════════════════════════════
+// DATA
+// ══════════════════════════════════════
+
+const questions = [
+  {
+    id: 'situation',
+    step: 'Question 1 of 3',
+    pct: 33,
+    text: 'What best describes your situation right now?',
+    sub: 'Select everything that applies to you.',
+    multi: true,
+    options: [
+      { icon: '🤰', label: 'Pregnant or new parent', sub: 'Including adoptive parents', value: 'pregnant' },
+      { icon: '♿', label: 'Living with a disability', sub: 'Physical or mental health condition', value: 'disabled' },
+      { icon: '🤝', label: 'Caring for someone', sub: 'Unpaid carer for family or friend', value: 'carer' },
+      { icon: '💔', label: 'Recently bereaved', sub: 'Lost a partner or family member', value: 'bereaved' },
+      { icon: '💼', label: 'Out of work', sub: 'Unemployed or recently made redundant', value: 'unemployed' },
+      { icon: '🏥', label: 'Long-term illness', sub: 'Chronic condition or serious illness', value: 'ill' },
+      { icon: '👶', label: 'Single parent', sub: 'Raising children alone', value: 'single_parent' },
+      { icon: '👴', label: 'Over 60', sub: 'Approaching or in retirement', value: 'elderly' },
+      { icon: '💰', label: 'On a low income', sub: 'Struggling to cover living costs', value: 'low_income' },
+      { icon: '🎓', label: 'Full-time student', sub: 'In higher or further education', value: 'student' },
+    ]
+  },
+  {
+    id: 'work',
+    step: 'Question 2 of 3',
+    pct: 66,
+    text: 'What is your current work situation?',
+    sub: 'This helps us find the right financial entitlements for you.',
+    multi: false,
+    options: [
+      { icon: '💼', label: 'Working full time', value: 'full_time' },
+      { icon: '⏰', label: 'Working part time', value: 'part_time' },
+      { icon: '🏠', label: 'Not working', value: 'not_working' },
+      { icon: '🩺', label: 'Unable to work due to health', value: 'health' },
+      { icon: '👶', label: 'On maternity or paternity leave', value: 'parental_leave' },
+      { icon: '📚', label: 'In education or training', value: 'education' },
+    ]
+  },
+  {
+    id: 'housing',
+    step: 'Question 3 of 3',
+    pct: 100,
+    text: 'What is your housing situation?',
+    sub: 'Housing entitlements can be significant — this is important.',
+    multi: false,
+    options: [
+      { icon: '🏡', label: 'Homeowner', sub: 'With or without a mortgage', value: 'owner' },
+      { icon: '🏢', label: 'Private renter', value: 'private_rent' },
+      { icon: '🏘️', label: 'Council or housing association', value: 'social_rent' },
+      { icon: '👨‍👩‍👧', label: 'Living with family or friends', value: 'with_family' },
+    ]
+  }
+];
+
+// Entitlements database
+const entitlementsDB = {
+  pregnant: [
+    { icon: '🤰', iconClass: 'orange', title: 'Sure Start Maternity Grant', desc: 'A one-off payment to help with the costs of having a baby. You may be eligible if you\'re on certain benefits.', amount: '£500', period: 'one-off', link: 'https://www.gov.uk/sure-start-maternity-grant' },
+    { icon: '💊', iconClass: 'green', title: 'Free NHS Prescriptions', desc: 'All prescriptions are free during pregnancy and for 12 months after your baby is born.', amount: '£9.90', period: 'per prescription', link: 'https://www.gov.uk/help-nhs-costs' },
+    { icon: '🦷', iconClass: 'blue', title: 'Free NHS Dental Treatment', desc: 'Free dental care throughout pregnancy and until your baby\'s first birthday.', amount: '£25+', period: 'per treatment', link: 'https://www.gov.uk/help-nhs-costs' },
+    { icon: '🥛', iconClass: 'gold', title: 'Healthy Start Vouchers', desc: 'Weekly vouchers to spend on milk, fruit, vegetables and vitamins at participating stores.', amount: '£8.50', period: 'per week', link: 'https://www.healthystart.nhs.uk' },
+  ],
+  carer: [
+    { icon: '💰', iconClass: 'green', title: "Carer's Allowance", desc: "A weekly payment if you spend at least 35 hours a week caring for someone with a disability. One of the most commonly unclaimed benefits in the UK.", amount: '£81.90', period: 'per week', link: 'https://www.gov.uk/carers-allowance' },
+    { icon: '🏥', iconClass: 'blue', title: "Carer's Credit", desc: "Protects your State Pension if you're not paying National Insurance because you're caring for someone.", amount: 'Pension protection', period: 'ongoing', link: 'https://www.gov.uk/carers-credit' },
+    { icon: '😮‍💨', iconClass: 'purple', title: 'Respite Care Support', desc: 'Local councils must assess your needs as a carer and may provide respite care — time off from caring.', amount: 'Varies', period: 'by assessment', link: 'https://www.gov.uk/support-for-carers' },
+    { icon: '🎟️', iconClass: 'orange', title: 'Carer Premium on Benefits', desc: 'An additional amount added to certain benefits if you receive Carer\'s Allowance.', amount: '£45.60', period: 'per week extra', link: 'https://www.gov.uk/carers-allowance/eligibility' },
+  ],
+  disabled: [
+    { icon: '♿', iconClass: 'blue', title: 'Personal Independence Payment (PIP)', desc: 'Helps with the extra costs of living with a long-term health condition or disability. One of the most valuable and most unclaimed benefits.', amount: 'Up to £184.30', period: 'per week', link: 'https://www.gov.uk/pip' },
+    { icon: '🚗', iconClass: 'green', title: 'Blue Badge Scheme', desc: 'Allows you to park closer to where you need to go. Applies to a wide range of conditions — more people qualify than realise.', amount: 'Parking rights', period: 'nationwide', link: 'https://www.gov.uk/apply-blue-badge' },
+    { icon: '💼', iconClass: 'gold', title: 'Access to Work Grant', desc: 'Pays for practical support to help you start or stay in work — including transport, equipment, or a support worker.', amount: 'Up to £66,000', period: 'per year', link: 'https://www.gov.uk/access-to-work' },
+    { icon: '🏠', iconClass: 'orange', title: 'Disabled Facilities Grant', desc: 'Money to make adaptations to your home — such as a ramp, stairlift or accessible bathroom.', amount: 'Up to £30,000', period: 'one-off', link: 'https://www.gov.uk/disabled-facilities-grants' },
+  ],
+  bereaved: [
+    { icon: '💔', iconClass: 'purple', title: 'Bereavement Support Payment', desc: 'A monthly payment for up to 18 months if your spouse or civil partner died and you were under State Pension age.', amount: 'Up to £3,500', period: 'total', link: 'https://www.gov.uk/bereavement-support-payment' },
+    { icon: '🏠', iconClass: 'blue', title: 'Council Tax Reduction', desc: 'If you now live alone following a bereavement, you may be entitled to a 25% reduction on your council tax.', amount: '25% off', period: 'council tax', link: 'https://www.gov.uk/council-tax/discounts-for-disabilities' },
+    { icon: '💊', iconClass: 'green', title: 'Free Prescriptions if Low Income', desc: 'Following a bereavement your circumstances may now entitle you to free prescriptions and dental care.', amount: '£9.90', period: 'per prescription', link: 'https://www.gov.uk/help-nhs-costs' },
+  ],
+  low_income: [
+    { icon: '💷', iconClass: 'green', title: 'Universal Credit', desc: 'A monthly payment to help with living costs if you\'re on a low income or out of work. Replaces several older benefits.', amount: 'Up to £1,229', period: 'per month', link: 'https://www.gov.uk/universal-credit' },
+    { icon: '🔥', iconClass: 'orange', title: 'Warm Home Discount', desc: 'A one-off £150 discount applied directly to your electricity bill if you\'re on a low income.', amount: '£150', period: 'per year', link: 'https://www.gov.uk/the-warm-home-discount-scheme' },
+    { icon: '🏠', iconClass: 'blue', title: 'Council Tax Support', desc: 'Your local council may reduce or write off your council tax bill entirely based on your income.', amount: 'Up to 100% off', period: 'council tax', link: 'https://www.gov.uk/council-tax-reduction' },
+    { icon: '🦷', iconClass: 'gold', title: 'Free NHS Dental Treatment', desc: 'If you\'re on Universal Credit, Pension Credit or certain other benefits you\'re entitled to free dental care.', amount: '£25+', period: 'per treatment', link: 'https://www.gov.uk/help-nhs-costs' },
+    { icon: '🍎', iconClass: 'green', title: 'Free School Meals', desc: 'If you have children and are on certain benefits, your children may be entitled to free school meals.', amount: '£2.65', period: 'per child per day', link: 'https://www.gov.uk/apply-free-school-meals' },
+  ],
+  single_parent: [
+    { icon: '👶', iconClass: 'orange', title: 'Child Benefit', desc: 'A regular payment for every child you\'re responsible for under 16 (or under 20 if in education or training).', amount: '£25.60', period: 'per week, first child', link: 'https://www.gov.uk/child-benefit' },
+    { icon: '🧒', iconClass: 'green', title: 'Child Tax Credit', desc: 'Extra money for each child if you\'re on a low income and responsible for at least one child.', amount: 'Up to £3,455', period: 'per year per child', link: 'https://www.gov.uk/child-tax-credit' },
+    { icon: '🏫', iconClass: 'blue', title: 'Free Childcare Hours', desc: '15-30 hours of free childcare per week for children aged 3-4, and some younger children.', amount: 'Up to 30 hrs', period: 'per week free', link: 'https://www.gov.uk/free-childcare-citizens-of-other-countries' },
+    { icon: '💰', iconClass: 'purple', title: 'Child Maintenance', desc: 'If you\'re a single parent the other parent has a legal obligation to contribute financially. Use the Child Maintenance Service if needed.', amount: 'Calculated on income', period: 'of other parent', link: 'https://www.gov.uk/child-maintenance-service' },
+  ],
+  elderly: [
+    { icon: '🌡️', iconClass: 'orange', title: 'Winter Fuel Payment', desc: 'An annual payment to help with heating costs. Most people over 66 are eligible.', amount: '£200 - £300', period: 'per year', link: 'https://www.gov.uk/winter-fuel-payment' },
+    { icon: '🚌', iconClass: 'green', title: 'Free Bus Pass', desc: 'Free travel on local buses across England if you\'re over 60 in London or State Pension age elsewhere.', amount: 'Free travel', period: 'nationwide', link: 'https://www.gov.uk/apply-for-elderly-person-bus-pass' },
+    { icon: '💰', iconClass: 'gold', title: 'Pension Credit', desc: 'A top-up to your weekly income if you\'re over State Pension age and on a low income. Massively underclaimed.', amount: 'Up to £218', period: 'per week', link: 'https://www.gov.uk/pension-credit' },
+    { icon: '🏠', iconClass: 'blue', title: 'Attendance Allowance', desc: 'A tax-free payment if you\'re over State Pension age and need help with personal care due to illness or disability.', amount: 'Up to £108.55', period: 'per week', link: 'https://www.gov.uk/attendance-allowance' },
+  ],
+  unemployed: [
+    { icon: '💼', iconClass: 'blue', title: 'Universal Credit', desc: 'Monthly support while you look for work or increase your earnings. Must apply online through GOV.UK.', amount: 'Up to £1,229', period: 'per month', link: 'https://www.gov.uk/universal-credit' },
+    { icon: '📚', iconClass: 'green', title: 'Free Retraining Courses', desc: 'The government\'s Skills Bootcamps and free Level 3 courses can help you retrain for a new career at no cost.', amount: 'Fully funded', period: 'training', link: 'https://www.gov.uk/guidance/free-courses-for-jobs' },
+    { icon: '🏠', iconClass: 'orange', title: 'Housing Benefit / LHA', desc: 'Help with rent if you\'re on a low income or claiming Universal Credit.', amount: 'Varies by area', period: 'monthly', link: 'https://www.gov.uk/housing-benefit' },
+  ],
+  ill: [
+    { icon: '💊', iconClass: 'green', title: 'Free Prescriptions', desc: 'If you have a specific long-term condition you may be entitled to free prescriptions for life with a Medical Exemption Certificate.', amount: '£9.90', period: 'per prescription saved', link: 'https://www.gov.uk/prescription-costs' },
+    { icon: '💰', iconClass: 'blue', title: 'Employment Support Allowance', desc: 'Financial support if you\'re unable to work due to illness or disability.', amount: 'Up to £138.20', period: 'per week', link: 'https://www.gov.uk/employment-support-allowance' },
+    { icon: '🚗', iconClass: 'orange', title: 'NHS Hospital Travel Costs', desc: 'If you\'re on a low income you may be able to claim back travel costs to hospital appointments.', amount: 'Full reimbursement', period: 'per trip', link: 'https://www.gov.uk/help-with-hospital-travel-costs' },
+  ],
+  student: [
+    { icon: '🎓', iconClass: 'purple', title: 'Maintenance Loan', desc: 'Financial support to cover living costs while you study, based on your household income.', amount: 'Up to £13,022', period: 'per year', link: 'https://www.gov.uk/student-finance' },
+    { icon: '🍎', iconClass: 'green', title: 'Council Tax Exemption', desc: 'Full-time students are exempt from paying council tax.', amount: '£1,800+', period: 'per year saved', link: 'https://www.gov.uk/council-tax/who-has-to-pay' },
+  ]
+};
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let currentQ = 0;
+let answers = {};
+
+// ══════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goHome() { showScreen('screen-hero'); currentQ = 0; answers = {}; }
+function startQuiz() { showScreen('screen-quiz'); currentQ = 0; renderQuestion(); }
+
+// ══════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════
+function renderQuestion() {
+  const q = questions[currentQ];
+  const card = document.getElementById('question-card');
+  const savedAnswer = answers[q.id];
+
+  card.innerHTML = `
+    <span class="q-step">${q.step}</span>
+    <h2 class="q-text">${q.text}</h2>
+    <p class="q-sub">${q.sub}</p>
+    <div class="options-grid${q.options.length <= 4 ? ' two-col' : ''}">
+      ${q.options.map(opt => `
+        <div class="opt ${isSelected(savedAnswer, opt.value, q.multi) ? 'selected' : ''}"
+             onclick="selectOption(this, '${opt.value}', ${q.multi})">
+          <span class="opt-icon">${opt.icon}</span>
+          <div class="opt-label">${opt.label}</div>
+          ${opt.sub ? `<div class="opt-sub">${opt.sub}</div>` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  // Progress
+  document.getElementById('progress-label').textContent = q.step;
+  document.getElementById('progress-pct').textContent = q.pct + '%';
+  document.getElementById('progress-fill').style.width = q.pct + '%';
+
+  // Back button
+  document.getElementById('btn-back').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+
+  // Next button state
+  updateNextBtn();
+}
+
+function isSelected(saved, value, multi) {
+  if (!saved) return false;
+  if (multi) return Array.isArray(saved) && saved.includes(value);
+  return saved === value;
+}
+
+function selectOption(el, value, multi) {
+  const q = questions[currentQ];
+  if (multi) {
+    if (!answers[q.id]) answers[q.id] = [];
+    if (el.classList.contains('selected')) {
+      answers[q.id] = answers[q.id].filter(v => v !== value);
+      el.classList.remove('selected');
+    } else {
+      answers[q.id].push(value);
+      el.classList.add('selected');
+    }
+  } else {
+    document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[q.id] = value;
+  }
+  updateNextBtn();
+}
+
+function updateNextBtn() {
+  const q = questions[currentQ];
+  const ans = answers[q.id];
+  const hasAnswer = q.multi ? (Array.isArray(ans) && ans.length > 0) : !!ans;
+  document.getElementById('btn-next').disabled = !hasAnswer;
+}
+
+function nextQuestion() {
+  if (currentQ < questions.length - 1) {
+    currentQ++;
+    renderQuestion();
+  } else {
+    runCalculating();
+  }
+}
+
+function prevQuestion() {
+  if (currentQ > 0) { currentQ--; renderQuestion(); }
+  else goHome();
+}
+
+// ══════════════════════════════════════
+// CALCULATING
+// ══════════════════════════════════════
+// ══════════════════════════════════════
+// SUPABASE CONFIG
+// ══════════════════════════════════════
+const SUPABASE_URL = 'https://nbuiygvfdxkeoqzgddxz.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_S_g4JkIsE_sYTjM3x-beXA_H44vqDzD';
+
+async function saveSession(sessionId, answersData) {
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/sessions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ id: sessionId, answers: answersData })
+    });
+    return res.ok;
+  } catch(e) {
+    console.error('Session save error:', e);
+    return false;
+  }
+}
+
+async function loadSession(sessionId) {
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/sessions?id=eq.' + sessionId + '&select=answers', {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY
+      }
+    });
+    const data = await res.json();
+    return data && data.length > 0 ? data[0].answers : null;
+  } catch(e) {
+    console.error('Session load error:', e);
+    return null;
+  }
+}
+
+async function updateSessionEmail(sessionId, email) {
+  try {
+    await fetch(SUPABASE_URL + '/rest/v1/sessions?id=eq.' + sessionId, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY
+      },
+      body: JSON.stringify({ email: email })
+    });
+  } catch(e) {
+    console.error('Email update error:', e);
+  }
+}
+
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
+function runCalculating() {
+  showScreen('screen-calculating');
+  const steps = ['cs1','cs2','cs3','cs4','cs5'];
+  steps.forEach((id, i) => {
+    setTimeout(() => {
+      document.getElementById(id).className = 'calc-step-item active';
+    }, i * 600);
+    setTimeout(() => {
+      document.getElementById(id).className = 'calc-step-item done';
+    }, i * 600 + 400);
+  });
+
+  // Generate session ID and save answers to Supabase
+  const sessionId = generateUUID();
+  window._sessionId = sessionId;
+  saveSession(sessionId, answers);
+
+  setTimeout(showPaywall, steps.length * 600 + 600);
+}
+
+// ══════════════════════════════════════
+// BUILD ENTITLEMENTS LIST
+// ══════════════════════════════════════
+function buildEntitlements() {
+  const situations = answers['situation'] || [];
+  let items = [];
+  const seen = new Set();
+
+  // Always add low_income basics
+  const allSituations = [...situations, 'low_income'];
+
+  allSituations.forEach(sit => {
+    const ents = entitlementsDB[sit] || [];
+    ents.forEach(e => {
+      if (!seen.has(e.title)) {
+        seen.add(e.title);
+        items.push(e);
+      }
+    });
+  });
+
+  // Ensure minimum
+  if (items.length < 4) {
+    const defaults = entitlementsDB['low_income'] || [];
+    defaults.forEach(e => {
+      if (!seen.has(e.title)) { seen.add(e.title); items.push(e); }
+    });
+  }
+
+  return items;
+}
+
+function estimateTotal(items) {
+  const ranges = { '£500':500,'£81.90':4259,'£184.30':9584,'£150':150,'£200':200,'£300':300,'£25.60':1331,'£218':11336,'£108.55':5645,'£138.20':7186 };
+  let total = 0;
+  items.forEach(item => {
+    Object.keys(ranges).forEach(k => { if (item.amount.includes(k.replace('£',''))) total += ranges[k]; });
+  });
+  if (total < 500) total = 1200;
+  return '£' + Math.round(total / 100) * 100 + '+';
+}
+
+// ══════════════════════════════════════
+// PAYWALL
+// ══════════════════════════════════════
+function showPaywall() {
+  const items = buildEntitlements();
+  const total = estimateTotal(items);
+
+  document.getElementById('found-count').textContent = items.length + ' things';
+  document.getElementById('total-value').textContent = total;
+
+  // Show 2 clear + rest blurred
+  const preview = document.getElementById('preview-items');
+  const shown = items.slice(0, 5);
+
+  preview.innerHTML = shown.map((item, i) => `
+    <div class="preview-item ${i >= 2 ? 'blurred' : ''}">
+      <div class="ent-icon ${item.iconClass}">${item.icon}</div>
+      <div class="preview-content">
+        <h4>${i >= 2 ? '••••••••••••••' : item.title}</h4>
+        <p>${i >= 2 ? '•••••• ••••• •••• •••••••••••••' : item.desc.slice(0, 70) + '...'}</p>
+      </div>
+      <div class="preview-amount">${i >= 2 ? '••••' : item.amount}</div>
+    </div>
+  `).join('') + `
+    <div class="blur-overlay">
+      <span>+ ${items.length - 2} more entitlements hidden</span>
+    </div>
+  `;
+
+  showScreen('screen-paywall');
+  window._entitlements = items;
+  window._total = total;
+}
+
+function unlockResults() {
+  const subscribeChecked = document.getElementById('subscribe-check').checked;
+  const sessionId = window._sessionId || generateUUID();
+
+  // Build return URL with session ID so results load automatically after payment
+  const returnBase = window.location.origin + window.location.pathname.replace('whatyoureowed.html','') + 'wyo-report.html';
+  const returnUrl = returnBase + '?session=' + sessionId;
+
+  // Update Stripe payment links with session return
+  if (subscribeChecked) {
+    window.location.href = 'https://buy.stripe.com/00w00lcpFbAhdKbd1a53O01?client_reference_id=' + sessionId;
+  } else {
+    window.location.href = 'https://buy.stripe.com/00w7sN61h1ZH7lN6CM53O00?client_reference_id=' + sessionId;
+  }
+}
+
+// ══════════════════════════════════════
+// RESULTS
+// ══════════════════════════════════════
+function showResults() {
+  const items = window._entitlements || buildEntitlements();
+  const total = window._total || estimateTotal(items);
+
+  document.getElementById('results-total').textContent = total;
+
+  const list = document.getElementById('entitlements-list');
+  list.innerHTML = items.map((item, i) => `
+    <div class="entitlement-card" style="transition-delay: ${i * 0.08}s">
+      <div class="ent-icon ${item.iconClass}">${item.icon}</div>
+      <div class="ent-body">
+        <h3>${item.title}</h3>
+        <p>${item.desc}</p>
+        <a class="ent-how" href="${item.link}" target="_blank" rel="noopener">
+          How to claim →
+        </a>
+      </div>
+      <div class="ent-amount">
+        <strong>${item.amount}</strong>
+        <span>${item.period}</span>
+      </div>
+    </div>
+  `).join('');
+
+  showScreen('screen-results');
+
+  // Animate cards in
+  setTimeout(() => {
+    document.querySelectorAll('.entitlement-card').forEach((card, i) => {
+      setTimeout(() => card.classList.add('visible'), i * 100);
+    });
+  }, 100);
+}
+
+function downloadReport() {
+  const sessionId = window._sessionId || '';
+  window.location.href = 'wyo-report.html?session=' + sessionId;
+}
+
+function shareReport() {
+  if (navigator.share) {
+    navigator.share({ title: "What You're Owed", text: "I just found out what benefits I'm entitled to — took 2 minutes. Check yours:", url: window.location.href });
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    alert('Link copied! Share it with someone who needs it.');
+  }
+}
+</script>
+</body>
+</html>

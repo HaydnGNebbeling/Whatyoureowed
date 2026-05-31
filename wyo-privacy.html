@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — What You're Owed</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf7f2;
+    --ink: #1a1410;
+    --brown: #3d2b1f;
+    --terracotta: #c4622d;
+    --sage: #7a9e7e;
+    --muted: #8c7b6e;
+    --border: #e8e0d5;
+    --shadow: rgba(61,43,31,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--cream); color: var(--ink); font-family: 'DM Sans', sans-serif; }
+
+  nav {
+    padding: 1.2rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    background: rgba(250,247,242,0.95);
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    backdrop-filter: blur(10px);
+  }
+
+  .logo { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 600; color: var(--brown); text-decoration: none; }
+  .logo span { color: var(--terracotta); }
+  .back { font-size: 0.8rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .back:hover { color: var(--brown); }
+
+  .page { max-width: 720px; margin: 0 auto; padding: 5rem 2rem 8rem; }
+
+  .page-header { margin-bottom: 4rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border); }
+
+  .pill {
+    display: inline-block;
+    background: rgba(196,98,45,0.08);
+    border: 1px solid rgba(196,98,45,0.2);
+    color: var(--terracotta);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 0.35rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 1.2rem;
+    text-transform: uppercase;
+  }
+
+  .page-header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 400;
+    color: var(--brown);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+  .page-header h1 em { font-style: italic; color: var(--terracotta); }
+
+  .meta-row { display: flex; gap: 2rem; flex-wrap: wrap; }
+  .meta-item { display: flex; flex-direction: column; gap: 0.2rem; }
+  .meta-label { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.18em; color: #bbb; text-transform: uppercase; }
+  .meta-val { font-size: 0.85rem; color: var(--muted); font-style: italic; }
+
+  /* Important box */
+  .important-box {
+    background: rgba(196,98,45,0.05);
+    border: 1px solid rgba(196,98,45,0.2);
+    border-left: 3px solid var(--terracotta);
+    border-radius: 0 12px 12px 0;
+    padding: 1.5rem 1.8rem;
+    margin-bottom: 4rem;
+  }
+
+  .important-box .box-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--terracotta);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+
+  .important-box p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.85;
+  }
+  .important-box p strong { color: var(--brown); font-weight: 500; }
+
+  /* Sections */
+  .section { margin-bottom: 3.5rem; padding-bottom: 3.5rem; border-bottom: 1px solid var(--border); }
+  .section:last-of-type { border-bottom: none; }
+
+  .section-num {
+    font-family: 'Fraunces', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    color: #e8e0d5;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+
+  .section h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--brown);
+    letter-spacing: -0.02em;
+    margin-bottom: 1.2rem;
+  }
+  .section h2 em { font-style: italic; color: var(--terracotta); }
+
+  .section p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.9;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+  .section p strong { color: var(--brown); font-style: normal; font-weight: 500; }
+  .section p:last-child { margin-bottom: 0; }
+
+  .section ul {
+    list-style: none;
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .section ul li {
+    font-size: 0.85rem;
+    color: var(--muted);
+    padding-left: 1.5rem;
+    position: relative;
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  .section ul li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--terracotta);
+    font-style: normal;
+  }
+  .section ul li strong { color: var(--brown); font-style: normal; font-weight: 500; }
+
+  /* Special callout */
+  .special-box {
+    background: rgba(122,158,126,0.06);
+    border: 1px solid rgba(122,158,126,0.2);
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .special-box p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin: 0;
+    font-style: italic;
+  }
+  .special-box p strong { color: var(--sage); font-style: normal; font-weight: 600; }
+
+  /* Contact */
+  .contact-box {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-top: 4rem;
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+  .contact-box h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--brown);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+  .contact-box p { font-size: 0.85rem; color: var(--muted); line-height: 1.8; font-style: italic; margin-bottom: 1rem; }
+  .contact-box a {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--terracotta);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(196,98,45,0.3);
+    padding-bottom: 0.1rem;
+    transition: border-color 0.2s;
+  }
+  .contact-box a:hover { border-color: var(--terracotta); }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+  .footer-links a { font-size: 0.75rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--terracotta); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="whatyoureowed.html" class="logo">What You're <span>Owed</span></a>
+  <a href="whatyoureowed.html" class="back">← Back</a>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <div class="pill">Legal</div>
+    <h1>Privacy <em>Policy</em></h1>
+    <div class="meta-row">
+      <div class="meta-item">
+        <span class="meta-label">Last Updated</span>
+        <span class="meta-val">January 2025</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Jurisdiction</span>
+        <span class="meta-val">United Kingdom (UK GDPR)</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Applies To</span>
+        <span class="meta-val">whatyoureowed.com</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="important-box">
+    <span class="box-title">⚠ Special Category Data Notice</span>
+    <p>whatyoureowed.com collects information about your personal circumstances to generate your entitlements report. This may include <strong>special category data</strong> under UK GDPR — such as information about health conditions, disability status, pregnancy, and bereavement. We take the handling of this information extremely seriously and process it only to provide you with your personalised report. We never sell this data. We never share it without your explicit consent.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">01</div>
+    <h2>Who We <em>Are</em></h2>
+    <p>whatyoureowed.com is a digital platform operated as an independent business in the United Kingdom. Our purpose is to help people in the UK find out what government entitlements, benefits, and support they are eligible for — and how to claim them.</p>
+    <p>References to "we", "us", or "our" mean whatyoureowed.com. References to "you" or "your" mean the person using our platform. For data protection enquiries please contact us at the address at the bottom of this page.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">02</div>
+    <h2>What Information We <em>Collect</em></h2>
+    <p>To generate your personalised entitlements report we collect the following information:</p>
+    <ul>
+      <li><strong>Situation information</strong> — your life circumstances such as whether you are pregnant, a carer, disabled, bereaved, unemployed, ill, elderly, or on a low income</li>
+      <li><strong>Work status</strong> — whether you are working, not working, or unable to work</li>
+      <li><strong>Housing situation</strong> — whether you own or rent your home</li>
+      <li><strong>Email address</strong> — provided when you download your report, so we can send you a copy and notify you of relevant changes</li>
+      <li><strong>Payment information</strong> — processed securely by Stripe. We never see or store your card details</li>
+      <li><strong>Usage data</strong> — anonymous information about how you use our website, collected via analytics tools</li>
+    </ul>
+
+    <div class="special-box">
+      <p><strong>Important:</strong> Some of the information you provide — such as health conditions, disability status, pregnancy, and bereavement — is classified as <strong>special category data</strong> under UK GDPR. We collect this solely to generate your report. It is not stored in a way that identifies you personally beyond what is necessary to deliver the service.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-num">03</div>
+    <h2>Why We Collect It &amp; Our <em>Legal Basis</em></h2>
+    <p>We process your information for the following purposes and on the following legal grounds:</p>
+    <ul>
+      <li><strong>To generate your personalised entitlements report</strong> — legal basis: contract performance (you have requested this service)</li>
+      <li><strong>To send your report to your email address</strong> — legal basis: contract performance</li>
+      <li><strong>To notify you of changes in legislation that affect your entitlements</strong> — legal basis: consent (you opt in when providing your email)</li>
+      <li><strong>To process your payment</strong> — legal basis: contract performance</li>
+      <li><strong>To improve our platform</strong> — legal basis: legitimate interest (using anonymous analytics data only)</li>
+    </ul>
+    <p>For special category data specifically, our legal basis is <strong>explicit consent</strong> — by completing the questionnaire and submitting it, you are explicitly consenting to us processing this information to generate your report.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">04</div>
+    <h2>How We <em>Use</em> Your Information</h2>
+    <p>We use your information only for the purposes described above. Specifically:</p>
+    <ul>
+      <li>Your situation data is used to match you against our entitlements database and generate your report — it is not stored linked to your personal identity after your session</li>
+      <li>Your email address is used to send your report and, with your consent, to notify you of relevant updates</li>
+      <li>We do not use your information for profiling, automated decision-making, or targeted advertising</li>
+      <li>We never sell your data to any third party under any circumstances</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">05</div>
+    <h2>Who We <em>Share</em> Your Data With</h2>
+    <p>We use a small number of trusted third-party services to operate our platform:</p>
+    <ul>
+      <li><strong>Stripe</strong> — processes payments securely. Stripe is PCI-DSS compliant and we never receive your full card details</li>
+      <li><strong>Kit (email platform)</strong> — stores your email address and sends automated emails on our behalf. You can unsubscribe at any time</li>
+      <li><strong>Analytics provider</strong> — provides anonymous, aggregated data about how our platform is used. No personally identifiable information is shared</li>
+    </ul>
+    <p>We do not share your personal data — and particularly not your situation or health information — with any other third parties. We will never sell, rent, or trade your data.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">06</div>
+    <h2>How Long We <em>Keep</em> Your Data</h2>
+    <ul>
+      <li><strong>Situation data</strong> — used within your session to generate your report and not stored beyond that session in personally identifiable form</li>
+      <li><strong>Email address</strong> — retained until you unsubscribe or ask us to delete it</li>
+      <li><strong>Payment records</strong> — retained for 7 years in line with UK financial record-keeping obligations</li>
+      <li><strong>Analytics data</strong> — anonymised and retained in line with our analytics provider's settings</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">07</div>
+    <h2>Your Rights Under <em>UK GDPR</em></h2>
+    <p>You have the following rights regarding your personal data:</p>
+    <ul>
+      <li><strong>Right to access</strong> — request a copy of the data we hold about you</li>
+      <li><strong>Right to rectification</strong> — ask us to correct inaccurate data</li>
+      <li><strong>Right to erasure</strong> — ask us to delete your data ("the right to be forgotten")</li>
+      <li><strong>Right to withdraw consent</strong> — withdraw your consent to email communications at any time by clicking unsubscribe</li>
+      <li><strong>Right to restrict processing</strong> — ask us to limit how we use your data</li>
+      <li><strong>Right to object</strong> — object to processing based on legitimate interest</li>
+      <li><strong>Right to data portability</strong> — request your data in a portable format</li>
+    </ul>
+    <p>To exercise any of these rights contact us using the details below. We will respond within 30 days. If you are unhappy with how we handle your data you can complain to the <strong>Information Commissioner's Office (ICO)</strong> at ico.org.uk or 0303 123 1113.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">08</div>
+    <h2>Security</h2>
+    <p>We take appropriate technical and organisational measures to protect your personal data. All payments are processed by Stripe using industry-standard encryption. Email communications are delivered via a secure third-party platform. We never store special category data in a form that links it to your personal identity beyond your active session.</p>
+    <p>No internet transmission is completely secure. While we take reasonable precautions we cannot guarantee absolute security of data transmitted electronically.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">09</div>
+    <h2>Cookies</h2>
+    <p>We use essential cookies to ensure our platform functions correctly, and analytics cookies to understand how our platform is used. Analytics cookies collect anonymous, aggregated data only — no personal information. You can control cookies through your browser settings.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">10</div>
+    <h2>Changes to This <em>Policy</em></h2>
+    <p>We may update this policy from time to time. Changes will be posted here with an updated date. Continued use of our platform after changes constitutes acceptance of the updated policy. For significant changes affecting special category data we will notify you by email where we hold your address.</p>
+  </div>
+
+  <div class="contact-box">
+    <h3>Questions about your privacy?</h3>
+    <p>We take data privacy seriously — especially given the sensitive nature of the information people share with us. If you have any questions, concerns, or want to exercise your data rights, please get in touch. We aim to respond within 30 days.</p>
+    <a href="mailto:hello@whatyoureowed.com">hello@whatyoureowed.com</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="whatyoureowed.html">Home</a>
+    <a href="wyo-privacy.html">Privacy Policy</a>
+    <a href="wyo-terms.html">Terms & Conditions</a>
+    <a href="mailto:hello@whatyoureowed.com">Contact</a>
+  </div>
+  © 2025 whatyoureowed.com · All rights reserved · Registered in England & Wales
+</footer>
+
+</body>
+</html>

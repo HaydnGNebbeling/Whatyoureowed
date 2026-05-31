@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms & Conditions — What You're Owed</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf7f2;
+    --ink: #1a1410;
+    --brown: #3d2b1f;
+    --terracotta: #c4622d;
+    --sage: #7a9e7e;
+    --muted: #8c7b6e;
+    --border: #e8e0d5;
+    --shadow: rgba(61,43,31,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--cream); color: var(--ink); font-family: 'DM Sans', sans-serif; }
+
+  nav {
+    padding: 1.2rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    background: rgba(250,247,242,0.95);
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    backdrop-filter: blur(10px);
+  }
+
+  .logo { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 600; color: var(--brown); text-decoration: none; }
+  .logo span { color: var(--terracotta); }
+  .back { font-size: 0.8rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .back:hover { color: var(--brown); }
+
+  .page { max-width: 720px; margin: 0 auto; padding: 5rem 2rem 8rem; }
+
+  .page-header { margin-bottom: 4rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border); }
+
+  .pill {
+    display: inline-block;
+    background: rgba(196,98,45,0.08);
+    border: 1px solid rgba(196,98,45,0.2);
+    color: var(--terracotta);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 0.35rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 1.2rem;
+    text-transform: uppercase;
+  }
+
+  .page-header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 400;
+    color: var(--brown);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+  .page-header h1 em { font-style: italic; color: var(--terracotta); }
+
+  .meta-row { display: flex; gap: 2rem; flex-wrap: wrap; }
+  .meta-item { display: flex; flex-direction: column; gap: 0.2rem; }
+  .meta-label { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.18em; color: #bbb; text-transform: uppercase; }
+  .meta-val { font-size: 0.85rem; color: var(--muted); font-style: italic; }
+
+  .intro-box {
+    background: rgba(196,98,45,0.05);
+    border: 1px solid rgba(196,98,45,0.2);
+    border-left: 3px solid var(--terracotta);
+    border-radius: 0 12px 12px 0;
+    padding: 1.5rem 1.8rem;
+    margin-bottom: 4rem;
+  }
+  .intro-box p { font-size: 0.88rem; color: var(--muted); line-height: 1.85; font-style: italic; }
+  .intro-box p strong { color: var(--brown); font-style: normal; font-weight: 500; }
+
+  .section { margin-bottom: 3.5rem; padding-bottom: 3.5rem; border-bottom: 1px solid var(--border); }
+  .section:last-of-type { border-bottom: none; }
+
+  .section-num {
+    font-family: 'Fraunces', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    color: #e8e0d5;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+
+  .section h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--brown);
+    letter-spacing: -0.02em;
+    margin-bottom: 1.2rem;
+  }
+  .section h2 em { font-style: italic; color: var(--terracotta); }
+
+  .section p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.9;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+  .section p strong { color: var(--brown); font-style: normal; font-weight: 500; }
+  .section p:last-child { margin-bottom: 0; }
+
+  .section ul {
+    list-style: none;
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .section ul li {
+    font-size: 0.85rem;
+    color: var(--muted);
+    padding-left: 1.5rem;
+    position: relative;
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  .section ul li::before { content: '—'; position: absolute; left: 0; color: var(--terracotta); font-style: normal; }
+  .section ul li strong { color: var(--brown); font-style: normal; font-weight: 500; }
+
+  .warning-box {
+    background: rgba(196,98,45,0.04);
+    border: 1px solid rgba(196,98,45,0.15);
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .warning-box p { font-size: 0.85rem; color: var(--muted); line-height: 1.75; margin: 0; font-style: italic; }
+  .warning-box p strong { color: var(--terracotta); font-style: normal; font-weight: 700; }
+
+  .contact-box {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-top: 4rem;
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+  .contact-box h3 { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 400; color: var(--brown); margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+  .contact-box p { font-size: 0.85rem; color: var(--muted); line-height: 1.8; font-style: italic; margin-bottom: 1rem; }
+  .contact-box a { font-size: 0.85rem; font-weight: 600; color: var(--terracotta); text-decoration: none; border-bottom: 1px solid rgba(196,98,45,0.3); padding-bottom: 0.1rem; transition: border-color 0.2s; }
+  .contact-box a:hover { border-color: var(--terracotta); }
+
+  footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; font-size: 0.72rem; color: var(--muted); }
+  .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+  .footer-links a { font-size: 0.75rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--terracotta); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="whatyoureowed.html" class="logo">What You're <span>Owed</span></a>
+  <a href="whatyoureowed.html" class="back">← Back</a>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <div class="pill">Legal</div>
+    <h1>Terms & <em>Conditions</em></h1>
+    <div class="meta-row">
+      <div class="meta-item">
+        <span class="meta-label">Last Updated</span>
+        <span class="meta-val">January 2025</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Governing Law</span>
+        <span class="meta-val">England & Wales</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Applies To</span>
+        <span class="meta-val">whatyoureowed.com</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="intro-box">
+    <p>By using whatyoureowed.com or purchasing access to your entitlements report, you agree to these terms. Please read them carefully. If you do not agree, please do not use the platform. These terms apply alongside our <strong>Privacy Policy</strong>, which explains how we handle your personal and sensitive data.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">01</div>
+    <h2>What <em>We Are</em></h2>
+    <p>whatyoureowed.com is an independent information platform designed to help people in the United Kingdom understand what government benefits, grants, and entitlements they may be eligible for. We are not a government service, a charity, a legal advice service, or a financial adviser.</p>
+    <p>We provide information and guidance only. We do not make claims on your behalf and we do not guarantee the outcome of any claim you make following use of our platform.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">02</div>
+    <h2>The <em>Service</em></h2>
+    <p>Our platform provides a personalised entitlements report based on the information you provide. The report identifies entitlements you may be eligible for, the approximate amounts involved, and links to the relevant government claim pages.</p>
+    <p>Access to the full report requires a one-off payment of <strong>£9.99</strong>. An optional ongoing subscription at <strong>£4.99 per month</strong> provides updates when legislation changes that may affect your entitlements.</p>
+    <p>The free version of the platform allows you to complete the questionnaire and see a preview of your results before purchasing full access.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">03</div>
+    <h2>Accuracy of <em>Information</em></h2>
+
+    <div class="warning-box">
+      <p><strong>Important disclaimer:</strong> The information provided in your entitlements report is based on current UK legislation and the information you have provided. It is intended as general guidance only and does not constitute legal, financial, or professional advice. Eligibility for each entitlement depends on your specific and full circumstances, which we may not have complete visibility of.</p>
+    </div>
+
+    <p>We take care to ensure our entitlements database is accurate and up to date. However we cannot guarantee that all information is current, complete, or applicable to your specific situation. Legislation changes frequently. We strongly recommend verifying your eligibility directly with the relevant government department before making any claim.</p>
+    <p>Amounts shown in reports are based on standard rates and are indicative only. Your actual entitlement may be different.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">04</div>
+    <h2>Payment & <em>Refunds</em></h2>
+    <p>Payments are processed securely by Stripe. All prices are in British Pounds Sterling and include any applicable taxes.</p>
+
+    <div class="warning-box">
+      <p><strong>Refund policy:</strong> Due to the digital nature of our service, once your full report has been generated and accessed we are unable to offer a refund. If you experienced a technical issue that prevented you from accessing your report, please contact us and we will resolve it promptly.</p>
+    </div>
+
+    <p>For the monthly subscription, you may cancel at any time. Cancellation takes effect at the end of your current billing period. No partial refunds are given for unused subscription periods.</p>
+    <p>If you were charged incorrectly or charged twice, please contact us immediately and we will issue a full refund for the erroneous charge.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">05</div>
+    <h2>Your <em>Responsibilities</em></h2>
+    <p>To get the most accurate report possible, you are responsible for providing accurate information when completing the questionnaire. If you provide inaccurate information, the report generated will not accurately reflect your entitlements and we cannot be held responsible for the result.</p>
+    <p>You agree not to:</p>
+    <ul>
+      <li>Use our platform for any unlawful purpose</li>
+      <li>Attempt to gain unauthorised access to any part of our systems</li>
+      <li>Reproduce, redistribute, or resell any part of your entitlements report for commercial purposes</li>
+      <li>Make any claim or representation that your report constitutes legal or professional advice</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">06</div>
+    <h2>Intellectual <em>Property</em></h2>
+    <p>All content on whatyoureowed.com — including the platform design, entitlements database, report templates, and all written content — is the intellectual property of whatyoureowed.com and is protected by UK copyright law.</p>
+    <p>Your personalised report is licensed to you for personal use only. You may share it with family members, carers, or support workers to assist with your own claims. You may not sell, reproduce, or use any part of it for commercial purposes.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">07</div>
+    <h2>Limitation of <em>Liability</em></h2>
+    <p>To the fullest extent permitted by UK law, whatyoureowed.com shall not be liable for any loss, damage, or harm arising from:</p>
+    <ul>
+      <li>Decisions made based on the information in your entitlements report</li>
+      <li>The outcome of any benefit or entitlement claim you make</li>
+      <li>Changes in legislation that affect your entitlements after your report was generated</li>
+      <li>Inaccuracies arising from incorrect information you provided when completing the questionnaire</li>
+    </ul>
+    <p>Our total liability to you shall not exceed the amount you paid for your report. Nothing in these terms limits our liability for death or personal injury caused by our negligence, or for fraud.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">08</div>
+    <h2>Sensitive <em>Information</em></h2>
+    <p>We understand that the information you share with us — about health conditions, disability, bereavement, pregnancy, and financial circumstances — is deeply personal. We treat it with the utmost care and respect.</p>
+    <p>We process this information solely to generate your report. We do not share it with third parties for marketing purposes. We do not sell it. Full details of how we handle sensitive information are in our Privacy Policy.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">09</div>
+    <h2>Third Party <em>Links</em></h2>
+    <p>Your entitlements report contains links to GOV.UK and other government websites. These links are provided for your convenience. We have no control over the content of third-party websites and accept no responsibility for the accuracy or availability of information on those sites.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">10</div>
+    <h2>Changes to These <em>Terms</em></h2>
+    <p>We may update these terms from time to time. Changes will be posted here with an updated date. Your continued use of the platform after any changes means you accept the updated terms. For significant changes we will notify subscribers by email.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">11</div>
+    <h2>Governing <em>Law</em></h2>
+    <p>These terms are governed by the laws of England and Wales. Any disputes arising from these terms or your use of our platform shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+    <p>If any provision of these terms is found to be unenforceable, the remaining provisions will continue in full force.</p>
+  </div>
+
+  <div class="contact-box">
+    <h3>Questions about these terms?</h3>
+    <p>If you have any questions or concerns about these terms, or about any aspect of our service, please get in touch before using the platform. We're happy to clarify anything.</p>
+    <a href="mailto:hello@whatyoureowed.com">hello@whatyoureowed.com</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="whatyoureowed.html">Home</a>
+    <a href="wyo-privacy.html">Privacy Policy</a>
+    <a href="wyo-terms.html">Terms & Conditions</a>
+    <a href="mailto:hello@whatyoureowed.com">Contact</a>
+  </div>
+  © 2025 whatyoureowed.com · All rights reserved · Governed by the laws of England & Wales
+</footer>
+
+</body>
+</html>
