@@ -3,1176 +3,365 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Entitlements Report — What You're Owed</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<title>Your Report — What You're Owed</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-
-  /* ── SCREEN UI ── */
   :root {
     --cream: #faf7f2;
-    --ink: #1a1410;
     --brown: #3d2b1f;
-    --terracotta: #c4622d;
-    --terra-light: #e8845a;
+    --terra: #c4622d;
     --sage: #7a9e7e;
-    --gold: #d4a843;
     --muted: #8c7b6e;
     --border: #e8e0d5;
-    --shadow: rgba(61,43,31,0.08);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  body { background: var(--cream); color: var(--brown); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
 
-  body {
-    background: var(--cream);
-    color: var(--ink);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
+  /* NAV */
+  nav {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(250,247,242,0.95);
+    position: sticky; top: 0; z-index: 99;
   }
+  .logo { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 600; color: var(--brown); text-decoration: none; }
+  .logo span { color: var(--terra); }
 
-  .ui-wrapper {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 4rem 2rem 6rem;
-    text-align: center;
-  }
+  /* WRAPPER */
+  .wrap { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
 
-  .logo {
-    font-family: 'Fraunces', serif;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--brown);
-    text-decoration: none;
-    display: inline-block;
-    margin-bottom: 3rem;
-  }
-  .logo span { color: var(--terracotta); }
+  h1 { font-family: 'Fraunces', serif; font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 400; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 0.5rem; }
+  h1 em { font-style: italic; color: var(--terra); }
+  .sub { font-size: 0.9rem; color: var(--muted); line-height: 1.7; font-style: italic; margin-bottom: 2rem; }
 
-  .ui-wrapper h1 {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: 400;
-    color: var(--brown);
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-    margin-bottom: 1rem;
-  }
-  .ui-wrapper h1 em { font-style: italic; color: var(--terracotta); }
+  /* SPINNER */
+  .spinner-wrap { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 3rem 0; }
+  .spinner { width: 48px; height: 48px; border: 3px solid var(--border); border-top-color: var(--terra); border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner-wrap p { font-size: 0.88rem; color: var(--muted); font-style: italic; }
 
-  .ui-wrapper > p {
-    font-size: 0.92rem;
-    color: var(--muted);
-    line-height: 1.8;
-    margin-bottom: 3rem;
-  }
-
-  /* Email input */
-  .email-wrap {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 20px var(--shadow);
-    text-align: left;
-  }
-
-  .email-wrap label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-transform: uppercase;
-    display: block;
-    margin-bottom: 0.6rem;
-  }
-
-  .email-row {
-    display: flex;
-    gap: 0;
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-  .email-row:focus-within { border-color: var(--terracotta); }
-
-  .email-row input {
-    flex: 1;
-    border: none;
-    padding: 0.9rem 1.3rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.92rem;
-    color: var(--ink);
-    background: transparent;
-    outline: none;
-  }
-  .email-row input::placeholder { color: #ccc; }
-
-  .email-note {
-    font-size: 0.72rem;
-    color: var(--muted);
-    margin-top: 0.6rem;
-    line-height: 1.5;
-  }
-
-  /* Generate button */
-  .btn-generate {
-    display: block;
+  /* DOWNLOAD BTN */
+  .dl-btn {
+    display: none;
     width: 100%;
-    background: var(--terracotta);
+    background: var(--terra);
     color: white;
     font-family: 'DM Sans', sans-serif;
     font-size: 1rem;
     font-weight: 600;
-    padding: 1.1rem;
-    border-radius: 100px;
+    padding: 1.2rem;
     border: none;
+    border-radius: 100px;
     cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 4px 20px rgba(196,98,45,0.3);
-    margin-top: 1rem;
-  }
-  .btn-generate:hover {
-    background: var(--terra-light);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(196,98,45,0.35);
-  }
-  .btn-generate:disabled {
-    background: var(--border);
-    color: var(--muted);
-    box-shadow: none;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  /* Preview card */
-  .preview-card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 8px 40px var(--shadow);
     margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(196,98,45,0.3);
+    transition: background 0.2s;
+  }
+  .dl-btn:hover { background: #e8845a; }
+
+  /* TOTAL BOX */
+  .total-box {
     display: none;
-  }
-
-  .preview-header-bar {
-    background: var(--terracotta);
-    padding: 0.8rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .preview-header-bar span {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    color: white;
-    text-transform: uppercase;
-  }
-
-  .preview-scroll {
-    max-height: 400px;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .preview-scroll::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 100px;
-    background: linear-gradient(to bottom, transparent, white);
-    pointer-events: none;
-  }
-
-  /* Action buttons */
-  .action-row {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    display: none;
-  }
-
-  .btn-action {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    padding: 0.9rem 2rem;
-    border-radius: 100px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    border: none;
-    text-decoration: none;
-  }
-
-  .btn-dl {
-    background: var(--terracotta);
-    color: white;
-    box-shadow: 0 4px 16px rgba(196,98,45,0.25);
-  }
-  .btn-dl:hover { background: var(--terra-light); transform: translateY(-1px); }
-
-  .btn-share-wa {
-    background: #25D366;
-    color: white;
-    box-shadow: 0 4px 16px rgba(37,211,102,0.25);
-  }
-  .btn-share-wa:hover { background: #20ba59; transform: translateY(-1px); }
-
-  .btn-copy {
-    background: white;
-    color: var(--brown);
-    border: 1px solid var(--border);
-  }
-  .btn-copy:hover { border-color: var(--brown); transform: translateY(-1px); }
-  .btn-copy.copied { border-color: var(--sage); color: var(--sage); }
-
-  /* Loading state */
-  .loading-wrap {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding: 2rem;
-  }
-
-  .loading-spinner {
-    width: 48px;
-    height: 48px;
-    border: 3px solid var(--border);
-    border-top-color: var(--terracotta);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .loading-wrap p {
-    font-size: 0.88rem;
-    color: var(--muted);
-    font-style: italic;
-  }
-
-  /* ═══════════════════════════════════
-     PDF TEMPLATE — only renders for PDF
-  ═══════════════════════════════════ */
-  #pdf-template {
-    display: none;
-    font-family: 'DM Sans', sans-serif;
-    background: #faf7f2;
-    color: #1a1410;
-    width: 210mm;
-    min-height: 297mm;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  /* PDF Cover */
-  .pdf-cover {
-    background: #3d2b1f;
-    padding: 50px 50px 40px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .pdf-cover::before {
-    content: '';
-    position: absolute;
-    top: -50px;
-    right: -50px;
-    width: 250px;
-    height: 250px;
-    border: 60px solid rgba(196,98,45,0.15);
-    border-radius: 50%;
-  }
-
-  .pdf-cover::after {
-    content: '';
-    position: absolute;
-    bottom: -30px;
-    left: 30px;
-    width: 150px;
-    height: 150px;
-    border: 40px solid rgba(212,168,67,0.1);
-    border-radius: 50%;
-  }
-
-  .pdf-logo-text {
-    font-family: 'Fraunces', serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 0.1em;
-    margin-bottom: 40px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .pdf-logo-text span { color: #c4622d; }
-
-  .pdf-cover-title {
-    font-family: 'Fraunces', serif;
-    font-size: 36px;
-    font-weight: 300;
-    color: #faf7f2;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    margin-bottom: 8px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .pdf-cover-title em {
-    font-style: italic;
-    color: #e8845a;
-  }
-
-  .pdf-cover-sub {
-    font-size: 13px;
-    color: rgba(255,255,255,0.5);
-    margin-bottom: 30px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .pdf-cover-meta {
-    display: flex;
-    gap: 30px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .pdf-meta-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .pdf-meta-label {
-    font-size: 8px;
-    letter-spacing: 0.2em;
-    color: rgba(255,255,255,0.35);
-    text-transform: uppercase;
-    font-weight: 600;
-  }
-
-  .pdf-meta-val {
-    font-size: 12px;
-    color: rgba(255,255,255,0.8);
-  }
-
-  /* PDF Summary bar */
-  .pdf-summary {
-    background: #c4622d;
-    padding: 20px 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .pdf-summary-left p {
-    font-size: 11px;
-    color: rgba(255,255,255,0.7);
-    margin-bottom: 2px;
-  }
-
-  .pdf-summary-amount {
-    font-family: 'Fraunces', serif;
-    font-size: 28px;
-    font-weight: 600;
-    color: white;
-    letter-spacing: -0.03em;
-    line-height: 1;
-  }
-
-  .pdf-summary-right {
-    text-align: right;
-  }
-
-  .pdf-summary-right p {
-    font-size: 11px;
-    color: rgba(255,255,255,0.7);
-    margin-bottom: 2px;
-  }
-
-  .pdf-summary-count {
-    font-family: 'Fraunces', serif;
-    font-size: 28px;
-    font-weight: 600;
-    color: white;
-    letter-spacing: -0.03em;
-    line-height: 1;
-  }
-
-  /* PDF body */
-  .pdf-body {
-    padding: 35px 50px;
-  }
-
-  .pdf-section-title {
-    font-family: 'Fraunces', serif;
-    font-size: 16px;
-    font-weight: 400;
-    color: #3d2b1f;
-    letter-spacing: -0.02em;
-    margin-bottom: 16px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e8e0d5;
-  }
-
-  .pdf-section-title em {
-    font-style: italic;
-    color: #c4622d;
-  }
-
-  /* Entitlement rows */
-  .pdf-ent {
-    border: 1px solid #e8e0d5;
-    border-radius: 10px;
-    padding: 16px 18px;
-    margin-bottom: 12px;
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-    background: white;
-    break-inside: avoid;
-  }
-
-  .pdf-ent-icon {
-    font-size: 22px;
-    flex-shrink: 0;
-    width: 36px;
+    background: rgba(122,158,126,0.1);
+    border: 1px solid rgba(122,158,126,0.25);
+    border-radius: 14px;
+    padding: 1.5rem;
     text-align: center;
-    margin-top: 2px;
+    margin-bottom: 1.5rem;
+  }
+  .total-box .amount { font-family: 'Fraunces', serif; font-size: 2.5rem; font-weight: 600; color: var(--sage); letter-spacing: -0.03em; display: block; }
+  .total-box p { font-size: 0.82rem; color: var(--muted); margin-top: 0.3rem; font-style: italic; }
+
+  /* ENTITLEMENT CARDS */
+  .ent-list { display: none; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
+
+  .ent-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(61,43,31,0.06);
   }
 
-  .pdf-ent-main { flex: 1; }
+  .ent-top { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+  .ent-icon { font-size: 1.8rem; flex-shrink: 0; }
+  .ent-name { font-size: 0.95rem; font-weight: 600; color: var(--brown); flex: 1; }
+  .ent-amount { text-align: right; flex-shrink: 0; }
+  .ent-amount strong { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 600; color: var(--sage); display: block; letter-spacing: -0.02em; }
+  .ent-amount span { font-size: 0.68rem; color: var(--muted); }
 
-  .pdf-ent-title {
-    font-size: 12px;
-    font-weight: 600;
-    color: #3d2b1f;
-    margin-bottom: 4px;
-    line-height: 1.3;
-  }
-
-  .pdf-ent-desc {
-    font-size: 10px;
-    color: #8c7b6e;
-    line-height: 1.6;
-    margin-bottom: 6px;
-  }
-
-  .pdf-ent-link {
-    font-size: 9px;
-    color: #c4622d;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-  }
-
-  .pdf-ent-amount {
-    text-align: right;
-    flex-shrink: 0;
-  }
-
-  .pdf-ent-amount strong {
-    font-family: 'Fraunces', serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: #7a9e7e;
-    display: block;
-    letter-spacing: -0.02em;
-    line-height: 1;
-  }
-
-  .pdf-ent-amount span {
-    font-size: 9px;
-    color: #b0a090;
-    display: block;
-    margin-top: 2px;
-  }
-
-  /* PDF Important note */
-  .pdf-note {
-    background: rgba(196,98,45,0.06);
-    border: 1px solid rgba(196,98,45,0.2);
-    border-left: 3px solid #c4622d;
-    border-radius: 0 8px 8px 0;
-    padding: 14px 18px;
-    margin: 24px 0;
-  }
-
-  .pdf-note-title {
-    font-size: 10px;
-    font-weight: 700;
-    color: #c4622d;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .pdf-note p {
-    font-size: 10px;
-    color: #8c7b6e;
-    line-height: 1.65;
-  }
-
-  /* PDF Next steps */
-  .pdf-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 24px;
-  }
-
-  .pdf-step {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .pdf-step-num {
-    width: 24px;
-    height: 24px;
-    background: #c4622d;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 700;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .pdf-step p {
-    font-size: 11px;
-    color: #3d2b1f;
-    line-height: 1.6;
-  }
-
-  .pdf-step p strong { font-weight: 600; }
-
-  /* PDF Footer */
-  .pdf-footer {
-    background: #3d2b1f;
-    padding: 20px 50px;
+  .ent-annual {
+    background: var(--cream);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.8rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: auto;
   }
+  .ent-annual span { font-size: 0.72rem; color: var(--muted); font-style: italic; }
+  .ent-annual strong { font-family: 'Fraunces', serif; font-size: 1.1rem; color: var(--brown); font-weight: 600; }
 
-  .pdf-footer-logo {
-    font-family: 'Fraunces', serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.5);
+  .ent-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.7; font-style: italic; margin-bottom: 0.8rem; }
+
+  .ent-docs { margin-bottom: 0.8rem; }
+  .ent-docs-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; display: block; }
+  .ent-docs-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .ent-doc { background: var(--cream); border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.72rem; color: var(--brown); }
+
+  .ent-claim { font-size: 0.75rem; font-weight: 600; color: var(--terra); }
+
+  /* SUBSCRIPTION */
+  .sub-offer {
+    display: none;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 12px rgba(61,43,31,0.06);
   }
+  .sub-offer h3 { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 400; color: var(--brown); margin-bottom: 0.4rem; }
+  .sub-offer h3 em { font-style: italic; color: var(--terra); }
+  .sub-offer p { font-size: 0.82rem; color: var(--muted); font-style: italic; line-height: 1.65; margin-bottom: 1rem; }
+  .sub-link { display: inline-block; background: var(--terra); color: white; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 100px; text-decoration: none; transition: background 0.2s; }
+  .sub-link:hover { background: #e8845a; }
 
-  .pdf-footer-logo span { color: #c4622d; }
+  /* SHARE */
+  .share-row { display: none; gap: 0.8rem; flex-wrap: wrap; }
+  .share-btn { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 600; padding: 0.75rem 1.3rem; border-radius: 100px; cursor: pointer; border: none; transition: all 0.2s; text-decoration: none; display: inline-block; }
+  .share-wa { background: #25D366; color: white; }
+  .share-copy { background: white; color: var(--brown); border: 1px solid var(--border); }
+  .share-copy.copied { border-color: var(--sage); color: var(--sage); }
 
-  .pdf-footer p {
-    font-size: 9px;
-    color: rgba(255,255,255,0.3);
-    text-align: right;
-    line-height: 1.5;
-  }
-
-  /* Disclaimer */
-  .pdf-disclaimer {
-    font-size: 8.5px;
-    color: #b0a090;
-    line-height: 1.7;
-    padding: 16px 0;
-    border-top: 1px solid #e8e0d5;
-    margin-top: 16px;
+  /* PRINT STYLES */
+  @media print {
+    nav, .dl-btn, .sub-offer, .share-row, .spinner-wrap { display: none !important; }
+    .ent-list, .total-box { display: flex !important; }
+    body { background: white; }
+    .ent-card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
   }
 </style>
 </head>
 <body>
 
-<!-- ── SCREEN UI ── -->
-<div class="ui-wrapper">
+<nav>
+  <a href="index.html" class="logo">What You're <span>Owed</span></a>
+</nav>
 
-  <a href="whatyoureowed.html" class="logo">What You're <span>Owed</span></a>
+<div class="wrap">
+  <h1>Your report is <em>ready.</em></h1>
+  <p class="sub">Your personalised entitlements report is below. Download it as a PDF to save or share with a family member or support worker.</p>
 
-  <h1>Your report is <em>ready to download.</em></h1>
-  <p>Enter your email below — we'll send you a copy and notify you when new entitlements apply to your situation. Then download your branded PDF report instantly.</p>
-
-  <div class="email-wrap">
-    <label>Your Email Address</label>
-    <div class="email-row">
-      <input type="email" id="user-email" placeholder="your@email.com" oninput="checkEmail()" onkeydown="if(event.key==='Enter')generateReport()"/>
-    </div>
-    <p class="email-note">We'll send your report here and let you know when legislation changes that affects your entitlements. Unsubscribe anytime.</p>
-    <button class="btn-generate" id="btn-gen" onclick="generateReport()">
-      Generate & Download My Report →
-    </button>
-  </div>
-
-  <div class="loading-wrap" id="loading-wrap">
-    <div class="loading-spinner"></div>
+  <!-- SPINNER -->
+  <div class="spinner-wrap" id="spinner">
+    <div class="spinner"></div>
     <p>Building your personalised report...</p>
   </div>
 
-  <div class="preview-card" id="preview-card">
-    <div class="preview-header-bar">
-      <span>📄 Your Report Preview</span>
-      <span id="preview-count-label">— entitlements found</span>
-    </div>
-    <div class="preview-scroll" id="preview-scroll">
-      <!-- PDF preview injected here -->
-    </div>
+  <!-- DOWNLOAD BUTTON -->
+  <button class="dl-btn" id="dl-btn" onclick="downloadReport()">
+    📄 Download My Report as PDF
+  </button>
+
+  <!-- TOTAL -->
+  <div class="total-box" id="total-box">
+    <span class="amount" id="total-amount">—</span>
+    <p>Estimated annual value of your entitlements</p>
   </div>
 
-  <div class="action-row" id="action-row">
-    <button class="btn-action btn-dl" onclick="downloadPDF()">
-      📄 Download PDF
-    </button>
-    <button class="btn-action btn-share-wa" onclick="shareWhatsApp()">
-      💬 Share on WhatsApp
-    </button>
-    <button class="btn-action btn-copy" id="btn-copy" onclick="copyLink()">
-      🔗 Copy Link
-    </button>
+  <!-- ENTITLEMENTS -->
+  <div class="ent-list" id="ent-list"></div>
+
+  <!-- SUBSCRIPTION OFFER -->
+  <div class="sub-offer" id="sub-offer">
+    <h3>Stay updated — <em>£4.99/month</em></h3>
+    <p>Legislation changes. New entitlements appear. We'll notify you whenever something changes that affects your situation. Cancel anytime.</p>
+    <a href="https://buy.stripe.com/00w00lcpFbAhdKbd1a53O01" class="sub-link">Add Monthly Updates — £4.99/month →</a>
   </div>
 
-</div>
-
-<!-- ── PDF TEMPLATE (hidden, used for generation) ── -->
-<div id="pdf-template">
-
-  <!-- Cover -->
-  <div class="pdf-cover">
-    <div class="pdf-logo-text">What You're <span>Owed</span></div>
-    <div class="pdf-cover-title">
-      Your Personal<br>
-      Entitlements <em>Report</em>
-    </div>
-    <div class="pdf-cover-sub">Prepared specifically for your situation</div>
-    <div class="pdf-cover-meta">
-      <div class="pdf-meta-item">
-        <span class="pdf-meta-label">Generated</span>
-        <span class="pdf-meta-val" id="pdf-date">—</span>
-      </div>
-      <div class="pdf-meta-item">
-        <span class="pdf-meta-label">Entitlements Found</span>
-        <span class="pdf-meta-val" id="pdf-count">—</span>
-      </div>
-      <div class="pdf-meta-item">
-        <span class="pdf-meta-label">Est. Annual Value</span>
-        <span class="pdf-meta-val" id="pdf-total-cover">—</span>
-      </div>
-    </div>
+  <!-- SHARE -->
+  <div class="share-row" id="share-row">
+    <button class="share-btn share-wa" onclick="shareWA()">💬 Share on WhatsApp</button>
+    <button class="share-btn share-copy" id="copy-btn" onclick="copyLink()">🔗 Copy Link</button>
   </div>
-
-  <!-- Summary bar -->
-  <div class="pdf-summary">
-    <div class="pdf-summary-left">
-      <p>Estimated annual value</p>
-      <div class="pdf-summary-amount" id="pdf-summary-amount">—</div>
-    </div>
-    <div class="pdf-summary-right">
-      <p>Entitlements identified</p>
-      <div class="pdf-summary-count" id="pdf-summary-count">—</div>
-    </div>
-  </div>
-
-  <!-- Body -->
-  <div class="pdf-body">
-
-    <div class="pdf-note">
-      <div class="pdf-note-title">⚠ Important — Please Read</div>
-      <p>This report is based on the information you provided and current UK legislation. Eligibility for each entitlement depends on your specific circumstances. We strongly recommend visiting the GOV.UK links provided for each entitlement to confirm your eligibility and start your claim. Amounts shown are indicative based on standard rates — your actual entitlement may differ.</p>
-    </div>
-
-    <div class="pdf-section-title">Your <em>Entitlements</em></div>
-    <div id="pdf-ents-list">
-      <!-- Injected by JS -->
-    </div>
-
-    <div class="pdf-section-title" style="margin-top:28px;">What to <em>Do Next</em></div>
-    <div class="pdf-steps">
-      <div class="pdf-step">
-        <div class="pdf-step-num">1</div>
-        <p><strong>Start with the highest value entitlement first.</strong> Click the GOV.UK link, check your eligibility, and begin the claim. Most claims take 15–30 minutes to start online.</p>
-      </div>
-      <div class="pdf-step">
-        <div class="pdf-step-num">2</div>
-        <p><strong>Work through each entitlement one at a time.</strong> Don't try to claim everything at once — focus on one per week. Set a reminder in your calendar.</p>
-      </div>
-      <div class="pdf-step">
-        <div class="pdf-step-num">3</div>
-        <p><strong>Share this report</strong> with a family member, carer, or support worker who can help you through the claim process if needed. You can send the PDF directly from your email.</p>
-      </div>
-      <div class="pdf-step">
-        <div class="pdf-step-num">4</div>
-        <p><strong>Check back regularly.</strong> Legislation changes. New entitlements come into effect. We'll email you at <span id="pdf-email-inline">your address</span> when anything changes that affects your situation.</p>
-      </div>
-      <div class="pdf-step">
-        <div class="pdf-step-num">5</div>
-        <p><strong>Know someone else who might be entitled to support?</strong> Share whatyoureowed.com with them — it's free to check and takes two minutes.</p>
-      </div>
-    </div>
-
-    <div class="pdf-disclaimer">
-      This report was generated by whatyoureowed.com on <span id="pdf-disclaimer-date">—</span>. The information contained in this report is provided for general guidance only and does not constitute legal or financial advice. Entitlement amounts are based on standard rates as of the date of generation and may be subject to change. whatyoureowed.com accepts no liability for decisions made based on this report. Always verify your eligibility directly with the relevant government department before making a claim. © 2025 whatyoureowed.com — All rights reserved. This report is for personal use only and may not be reproduced or redistributed without permission.
-    </div>
-
-  </div>
-
-  <!-- Footer -->
-  <div class="pdf-footer">
-    <div class="pdf-footer-logo">What You're <span>Owed</span></div>
-    <p>whatyoureowed.com<br>Your entitlements. Clearly explained.</p>
-  </div>
-
 </div>
 
 <script>
-// ── ENTITLEMENTS DATA (passed from main platform in production)
-// For standalone use, pulls from sessionStorage or uses demo data
-const demoEntitlements = [
-  { icon: '💰', title: "Carer's Allowance", desc: "A weekly payment if you spend at least 35 hours a week caring for someone with a disability. One of the most commonly unclaimed benefits in the UK.", amount: '£81.90', period: 'per week', link: 'https://www.gov.uk/carers-allowance' },
-  { icon: '♿', title: 'Personal Independence Payment (PIP)', desc: "Helps with the extra costs of living with a long-term health condition or disability. Available whether or not you work.", amount: 'Up to £184.30', period: 'per week', link: 'https://www.gov.uk/pip' },
-  { icon: '🔥', title: 'Warm Home Discount', desc: "A one-off £150 discount applied directly to your electricity bill if you're on a low income.", amount: '£150', period: 'per year', link: 'https://www.gov.uk/the-warm-home-discount-scheme' },
-  { icon: '🏠', title: 'Council Tax Reduction', desc: "Your local council may reduce your council tax bill based on your income and circumstances.", amount: 'Up to 100% off', period: 'council tax', link: 'https://www.gov.uk/council-tax-reduction' },
-  { icon: '💊', title: 'Free NHS Prescriptions', desc: "If you receive certain benefits you are entitled to free NHS prescriptions for all your medications.", amount: '£9.90', period: 'per prescription', link: 'https://www.gov.uk/help-nhs-costs' },
-  { icon: '🦷', title: 'Free NHS Dental Treatment', desc: "Entitlement to free dental care including checkups, fillings, and extractions based on your circumstances.", amount: '£25+', period: 'per treatment', link: 'https://www.gov.uk/help-nhs-costs' },
-  { icon: '🎟️', title: 'Carer Premium on Benefits', desc: "An additional amount added on top of certain benefits if you receive Carer's Allowance.", amount: '£45.60', period: 'per week extra', link: 'https://www.gov.uk/carers-allowance/eligibility' },
-];
-
-function getEntitlements() {
-  try {
-    const stored = sessionStorage.getItem('wyo_entitlements');
-    if (stored) return JSON.parse(stored);
-  } catch(e) {}
-  return demoEntitlements;
-}
-
-function getTotal() {
-  try {
-    return sessionStorage.getItem('wyo_total') || '£3,800+';
-  } catch(e) { return '£3,800+'; }
-}
-
-// ── EMAIL CHECK
-function checkEmail() {
-  const val = document.getElementById('user-email').value;
-  const valid = val.includes('@') && val.includes('.');
-  document.getElementById('btn-gen').disabled = !valid;
-}
-
-// ── GENERATE REPORT
-function generateReport() {
-  const emailInput = document.getElementById('user-email');
-  const email = emailInput ? emailInput.value.trim() : '';
-
-  // Show loading regardless
-  const loadingWrap = document.getElementById('loading-wrap');
-  const emailWrap = document.querySelector('.email-wrap');
-  if (loadingWrap) loadingWrap.style.display = 'flex';
-  if (emailWrap) {
-    emailWrap.style.opacity = '0.5';
-    emailWrap.style.pointerEvents = 'none';
-  }
-
-  try {
-    // Store email
-    if (email) sessionStorage.setItem('wyo_email', email);
-
-    // Build the PDF template
-    buildPDFTemplate(email);
-
-    // After short delay show preview + actions
-    setTimeout(() => {
-      if (loadingWrap) loadingWrap.style.display = 'none';
-      showPreviewAndActions();
-    }, 1500);
-  } catch(err) {
-    console.error('Generate error:', err);
-    if (loadingWrap) loadingWrap.style.display = 'none';
-    if (emailWrap) {
-      emailWrap.style.opacity = '1';
-      emailWrap.style.pointerEvents = 'auto';
-    }
-    alert('Something went wrong generating your report. Please try again.');
-  }
-}
-
-// ── DOCUMENTS NEEDED PER ENTITLEMENT
-const docsNeeded = {
-  "Carer's Allowance": ["National Insurance number", "Bank details", "Details of person you care for", "Payslips if working"],
-  "Personal Independence Payment (PIP)": ["National Insurance number", "GP contact details", "Medical letters", "Bank details"],
-  "Sure Start Maternity Grant": ["Benefit award letter", "Bank details", "Midwife signature on form"],
-  "Free NHS Prescriptions": ["Benefit award letter", "FP92A from GP (medical condition)", "FW8 from midwife (pregnancy)"],
-  "Free NHS Dental Treatment": ["Benefit award letter", "NHS exemption certificate"],
-  "Healthy Start Vouchers": ["Proof of pregnancy", "Proof of qualifying benefit"],
-  "Universal Credit": ["National Insurance number", "Bank details", "Proof of identity", "Rent agreement", "Payslips"],
-  "Warm Home Discount": ["No application needed if automatic", "Or contact your energy supplier"],
-  "Council Tax Support": ["Council tax bill", "Proof of income", "Bank statements", "Proof of address"],
-  "Free School Meals": ["Proof of qualifying benefit", "Child school details"],
-  "Child Benefit": ["Child birth certificate", "National Insurance number", "Bank details"],
-  "Child Tax Credit": ["National Insurance number", "Income details", "Child details"],
-  "Free Childcare Hours": ["National Insurance number", "Child details", "Childcare provider details"],
-  "Child Maintenance": ["Other parent details", "Child details", "Income information"],
-  "Winter Fuel Payment": ["Usually automatic if eligible", "National Insurance number"],
-  "Free Bus Pass": ["Proof of age", "Proof of address", "Passport photo"],
-  "Pension Credit": ["National Insurance number", "Bank details", "Pension statements", "Savings details"],
-  "Attendance Allowance": ["Details of condition", "GP contact details", "Bank details"],
-  "Bereavement Support Payment": ["Death certificate", "Marriage certificate", "National Insurance numbers", "Bank details"],
-  "Employment Support Allowance": ["National Insurance number", "Medical evidence", "Bank details", "Fit note from GP"],
-  "NHS Hospital Travel Costs": ["Proof of qualifying benefit", "Travel receipts", "Appointment letter"],
-  "Access to Work Grant": ["National Insurance number", "Employer details", "Details of support needed"],
-  "Disabled Facilities Grant": ["Proof of disability", "Proof of ownership or tenancy", "Quotes for work"],
-  "Blue Badge Scheme": ["Proof of disability", "Passport photo", "Proof of address", "National Insurance number"],
-  "Maintenance Loan": ["National Insurance number", "University offer letter", "Household income details"],
-  "Council Tax Exemption": ["Proof of full-time student status", "Council tax bill"],
-};
-
-// ── ANNUAL VALUE CALCULATION
-function calcAnnualValue(item) {
-  const amt = item.amount || '';
-  const period = item.period || '';
-
-  // Extract the first number from amount string
-  const match = amt.match(/[\d,]+\.?\d*/);
-  if (!match) return null;
-  const num = parseFloat(match[0].replace(',',''));
-
-  if (period.includes('per week')) return Math.round(num * 52);
-  if (period.includes('per month')) return Math.round(num * 12);
-  if (period.includes('per year') || period.includes('annually')) return Math.round(num);
-  if (period.includes('one-off') || period.includes('total')) return Math.round(num);
-  if (period.includes('per prescription')) return Math.round(num * 12); // estimate 12/year
-  if (period.includes('per child per day')) return Math.round(num * 190); // school days
-  if (period.includes('per treatment')) return Math.round(num * 4); // estimate
-  return null;
-}
-
-// ── BUILD PDF CONTENT
-function buildPDFTemplate(email) {
-  const items = getEntitlements();
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-
-  // Calculate real totals
-  let totalAnnual = 0;
-  const itemsWithCalc = items.map((item, i) => {
-    const annual = calcAnnualValue(item);
-    if (annual) totalAnnual += annual;
-    return { ...item, annual, priority: i + 1 };
-  });
-
-  const totalStr = totalAnnual > 0 ? '£' + totalAnnual.toLocaleString('en-GB') : getTotal();
-
-  // Fill metadata
-  document.getElementById('pdf-date').textContent = dateStr;
-  document.getElementById('pdf-count').textContent = items.length + ' found';
-  document.getElementById('pdf-total-cover').textContent = totalStr + ' per year';
-  document.getElementById('pdf-summary-amount').textContent = totalStr;
-  document.getElementById('pdf-summary-count').textContent = items.length;
-  document.getElementById('pdf-email-inline').textContent = email || 'your inbox';
-  document.getElementById('pdf-disclaimer-date').textContent = dateStr;
-
-  // Fill entitlements with rich detail
-  const list = document.getElementById('pdf-ents-list');
-  list.innerHTML = itemsWithCalc.map((item, i) => {
-    const docs = docsNeeded[item.title] || ['National Insurance number', 'Bank details', 'Proof of eligibility'];
-    const annualVal = item.annual ? '£' + item.annual.toLocaleString('en-GB') + ' per year' : item.amount + ' ' + item.period;
-
-    return `
-    <div class="pdf-ent" style="break-inside:avoid;">
-      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
-        <div class="pdf-ent-icon" style="font-size:20px;width:32px;flex-shrink:0;">${item.icon}</div>
-        <div style="flex:1;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-            <div class="pdf-ent-title" style="font-size:12px;font-weight:700;color:#3d2b1f;">${item.title}</div>
-            <div style="text-align:right;flex-shrink:0;">
-              <div style="font-family:Fraunces,serif;font-size:14px;font-weight:600;color:#7a9e7e;">${item.amount}</div>
-              <div style="font-size:9px;color:#8c7b6e;">${item.period}</div>
-            </div>
-          </div>
-          <div class="pdf-ent-desc" style="font-size:10px;color:#8c7b6e;line-height:1.6;margin:4px 0;">${item.desc}</div>
-        </div>
-      </div>
-
-      <div style="background:#f5f0e8;border-radius:8px;padding:10px 12px;margin-bottom:8px;">
-        <div style="font-size:8px;font-weight:700;letter-spacing:0.15em;color:#c4622d;text-transform:uppercase;margin-bottom:6px;">💰 ESTIMATED VALUE TO YOU</div>
-        <div style="font-family:Fraunces,serif;font-size:16px;font-weight:600;color:#3d2b1f;">${annualVal}</div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-        <div style="background:#f9f7f4;border:1px solid #e8e0d5;border-radius:6px;padding:8px 10px;">
-          <div style="font-size:8px;font-weight:700;letter-spacing:0.12em;color:#8c7b6e;text-transform:uppercase;margin-bottom:5px;">📋 DOCUMENTS NEEDED</div>
-          ${docs.map(d => `<div style="font-size:9px;color:#3d2b1f;padding:1px 0;">· ${d}</div>`).join('')}
-        </div>
-        <div style="background:#f9f7f4;border:1px solid #e8e0d5;border-radius:6px;padding:8px 10px;">
-          <div style="font-size:8px;font-weight:700;letter-spacing:0.12em;color:#8c7b6e;text-transform:uppercase;margin-bottom:5px;">🔗 HOW TO CLAIM</div>
-          <div style="font-size:9px;color:#3d2b1f;line-height:1.5;">Visit: <span style="color:#c4622d;font-weight:600;">gov.uk</span> and search for <strong>${item.title}</strong>, or call your local Jobcentre Plus for assistance.</div>
-        </div>
-      </div>
-
-      ${i < itemsWithCalc.length - 1 ? '<div style="border-bottom:1px solid #e8e0d5;margin:12px 0;"></div>' : ''}
-    </div>
-  `;
-  }).join('');
-
-  // Update preview label
-  document.getElementById('preview-count-label').textContent = items.length + ' entitlements — est. ' + totalStr + '/year';
-}
-
-// ── SHOW PREVIEW
-function showPreviewAndActions() {
-  // Clone PDF template into preview
-  const template = document.getElementById('pdf-template');
-  const previewScroll = document.getElementById('preview-scroll');
-  const clone = template.cloneNode(true);
-  clone.style.display = 'block';
-  clone.style.transform = 'scale(0.65)';
-  clone.style.transformOrigin = 'top left';
-  clone.style.width = '154%';
-  clone.style.pointerEvents = 'none';
-  previewScroll.innerHTML = '';
-  previewScroll.appendChild(clone);
-
-  document.getElementById('preview-card').style.display = 'block';
-  document.getElementById('action-row').style.display = 'flex';
-
-  // Scroll to preview
-  document.getElementById('preview-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// ── DOWNLOAD PDF
-function downloadPDF() {
-  const btn = document.querySelector('.btn-dl');
-  btn.textContent = '⏳ Generating...';
-  btn.disabled = true;
-
-  const template = document.getElementById('pdf-template');
-  template.style.display = 'block';
-
-  const email = document.getElementById('user-email').value || 'user';
-  const safeName = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '_');
-
-  const opt = {
-    margin: 0,
-    filename: `WhatYoureOwed_Report_${safeName}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      letterRendering: true
-    },
-    jsPDF: {
-      unit: 'mm',
-      format: 'a4',
-      orientation: 'portrait'
-    },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-  };
-
-  html2pdf().set(opt).from(template).save().then(() => {
-    template.style.display = 'none';
-    btn.textContent = '✓ Downloaded';
-    btn.style.background = '#7a9e7e';
-    setTimeout(() => {
-      btn.textContent = '📄 Download PDF';
-      btn.style.background = '';
-      btn.disabled = false;
-    }, 3000);
-  }).catch(err => {
-    template.style.display = 'none';
-    btn.textContent = '📄 Download PDF';
-    btn.disabled = false;
-    console.error('PDF generation error:', err);
-  });
-}
-
-// ── SHARE WHATSAPP
-function shareWhatsApp() {
-  const text = encodeURIComponent("I just found out everything I'm entitled to in the UK — it took 2 minutes and found hundreds of pounds I wasn't claiming. Check yours for free: https://whatyoureowed.com");
-  window.open('https://wa.me/?text=' + text, '_blank');
-}
-
-// ── COPY LINK
-function copyLink() {
-  const btn = document.getElementById('btn-copy');
-  navigator.clipboard.writeText('https://whatyoureowed.com').then(() => {
-    btn.textContent = '✓ Copied';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.innerHTML = '🔗 Copy Link';
-      btn.classList.remove('copied');
-    }, 2500);
-  });
-}
-
-// ══════════════════════════════════════
-// SUPABASE CONFIG
-// ══════════════════════════════════════
+// ── CONFIG
 const SUPABASE_URL = 'https://nbuiygvfdxkeoqzgddxz.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_S_g4JkIsE_sYTjM3x-beXA_H44vqDzD';
 
-// Entitlements database (same as main platform)
-const entitlementsDB = {
+// ── ENTITLEMENTS DATABASE
+const entDB = {
   pregnant: [
-    { icon: '🤰', iconClass: 'orange', title: 'Sure Start Maternity Grant', desc: 'A one-off payment to help with the costs of having a baby if you are on certain benefits.', amount: '£500', period: 'one-off', link: 'https://www.gov.uk/sure-start-maternity-grant' },
-    { icon: '💊', iconClass: 'green', title: 'Free NHS Prescriptions', desc: 'All prescriptions are free during pregnancy and for 12 months after your baby is born.', amount: '£9.90', period: 'per prescription', link: 'https://www.gov.uk/help-nhs-costs' },
-    { icon: '🦷', iconClass: 'blue', title: 'Free NHS Dental Treatment', desc: 'Free dental care throughout pregnancy and until your baby's first birthday.', amount: '£25+', period: 'per treatment', link: 'https://www.gov.uk/help-nhs-costs' },
-    { icon: '🥛', iconClass: 'gold', title: 'Healthy Start Vouchers', desc: 'Weekly vouchers to spend on milk, fruit, vegetables and vitamins at participating stores.', amount: '£8.50', period: 'per week', link: 'https://www.healthystart.nhs.uk' },
+    { icon:'🤰', title:'Sure Start Maternity Grant', desc:'A one-off payment to help with costs of having a baby if you receive certain benefits.', amount:'£500', period:'one-off', annual:500, docs:['Benefit award letter','Bank details','Midwife signature on form'] },
+    { icon:'💊', title:'Free NHS Prescriptions', desc:'All prescriptions are free during pregnancy and for 12 months after your baby is born.', amount:'£9.90', period:'per prescription', annual:120, docs:['Maternity exemption certificate from midwife'] },
+    { icon:'🦷', title:'Free NHS Dental Treatment', desc:'Free dental care throughout pregnancy and until your baby\'s first birthday.', amount:'£25+', period:'per treatment', annual:100, docs:['Maternity exemption certificate'] },
+    { icon:'🥛', title:'Healthy Start Vouchers', desc:'Weekly vouchers to spend on milk, fruit, vegetables and vitamins.', amount:'£8.50', period:'per week', annual:442, docs:['Proof of pregnancy','Proof of qualifying benefit'] },
   ],
   carer: [
-    { icon: '💰', iconClass: 'green', title: "Carer's Allowance", desc: 'A weekly payment if you spend at least 35 hours a week caring for someone with a disability.', amount: '£81.90', period: 'per week', link: 'https://www.gov.uk/carers-allowance' },
-    { icon: '🏥', iconClass: 'blue', title: "Carer's Credit", desc: 'Protects your State Pension if you are not paying National Insurance because you are caring for someone.', amount: 'Pension protection', period: 'ongoing', link: 'https://www.gov.uk/carers-credit' },
-    { icon: '😮', iconClass: 'purple', title: 'Respite Care Support', desc: 'Local councils must assess your needs as a carer and may provide respite care.', amount: 'Varies', period: 'by assessment', link: 'https://www.gov.uk/support-for-carers' },
-    { icon: '🎟️', iconClass: 'orange', title: 'Carer Premium on Benefits', desc: 'An additional amount added to certain benefits if you receive Carer's Allowance.', amount: '£45.60', period: 'per week extra', link: 'https://www.gov.uk/carers-allowance/eligibility' },
+    { icon:'💰', title:"Carer's Allowance", desc:'A weekly payment if you spend at least 35 hours a week caring for someone with a disability.', amount:'£81.90', period:'per week', annual:4259, docs:['National Insurance number','Details of person you care for','Bank details'] },
+    { icon:'🏥', title:"Carer's Credit", desc:'Protects your State Pension if you are not paying National Insurance because you are caring.', amount:'Pension protection', period:'ongoing', annual:0, docs:['National Insurance number','Details of person you care for'] },
+    { icon:'🎟️', title:'Carer Premium on Benefits', desc:'An additional amount added to certain benefits if you receive Carer\'s Allowance.', amount:'£45.60', period:'per week extra', annual:2371, docs:['Proof of Carer\'s Allowance award'] },
   ],
   disabled: [
-    { icon: '♿', iconClass: 'blue', title: 'Personal Independence Payment (PIP)', desc: 'Helps with the extra costs of living with a long-term health condition or disability.', amount: 'Up to £184.30', period: 'per week', link: 'https://www.gov.uk/pip' },
-    { icon: '🚗', iconClass: 'green', title: 'Blue Badge Scheme', desc: 'Allows you to park closer to where you need to go. More people qualify than realise.', amount: 'Parking rights', period: 'nationwide', link: 'https://www.gov.uk/apply-blue-badge' },
-    { icon: '💼', iconClass: 'gold', title: 'Access to Work Grant', desc: 'Pays for practical support to help you start or stay in work.', amount: 'Up to £66,000', period: 'per year', link: 'https://www.gov.uk/access-to-work' },
-    { icon: '🏠', iconClass: 'orange', title: 'Disabled Facilities Grant', desc: 'Money to make adaptations to your home such as a ramp, stairlift or accessible bathroom.', amount: 'Up to £30,000', period: 'one-off', link: 'https://www.gov.uk/disabled-facilities-grants' },
+    { icon:'♿', title:'Personal Independence Payment (PIP)', desc:'Helps with the extra costs of living with a long-term health condition or disability. Does not depend on income or savings.', amount:'Up to £184.30', period:'per week', annual:9584, docs:['National Insurance number','GP contact details','Medical letters','Bank details'] },
+    { icon:'🚗', title:'Blue Badge Scheme', desc:'Allows you to park closer to where you need to go. Many conditions qualify including mental health.', amount:'Parking rights', period:'nationwide', annual:0, docs:['Proof of disability','Passport photo','Proof of address'] },
+    { icon:'💼', title:'Access to Work Grant', desc:'Pays for practical support to help you start or stay in work — transport, equipment, or a support worker.', amount:'Up to £66,000', period:'per year', annual:5000, docs:['National Insurance number','Employer details','Details of support needed'] },
+    { icon:'🏠', title:'Disabled Facilities Grant', desc:'Money to make adaptations to your home such as a ramp, stairlift or accessible bathroom.', amount:'Up to £30,000', period:'one-off', annual:30000, docs:['Proof of disability','Proof of ownership or tenancy','Quotes for work'] },
   ],
   bereaved: [
-    { icon: '💔', iconClass: 'purple', title: 'Bereavement Support Payment', desc: 'A monthly payment for up to 18 months if your spouse or civil partner died.', amount: 'Up to £3,500', period: 'total', link: 'https://www.gov.uk/bereavement-support-payment' },
-    { icon: '🏠', iconClass: 'blue', title: 'Council Tax Reduction', desc: 'If you now live alone following a bereavement you may be entitled to a 25% council tax reduction.', amount: '25% off', period: 'council tax', link: 'https://www.gov.uk/council-tax/discounts-for-disabilities' },
-    { icon: '💊', iconClass: 'green', title: 'Free Prescriptions if Low Income', desc: 'Your new financial situation may entitle you to free prescriptions and dental care.', amount: '£9.90', period: 'per prescription', link: 'https://www.gov.uk/help-nhs-costs' },
+    { icon:'💔', title:'Bereavement Support Payment', desc:'A monthly payment for up to 18 months if your spouse or civil partner has died.', amount:'Up to £3,500', period:'total', annual:3500, docs:['Death certificate','Marriage certificate','National Insurance numbers','Bank details'] },
+    { icon:'🏠', title:'Council Tax Reduction', desc:'If you now live alone following a bereavement you may be entitled to a 25% reduction.', amount:'25% off', period:'council tax bill', annual:450, docs:['Council tax bill','Proof of sole occupancy'] },
   ],
   low_income: [
-    { icon: '💷', iconClass: 'green', title: 'Universal Credit', desc: 'A monthly payment to help with living costs if you are on a low income or out of work.', amount: 'Up to £1,229', period: 'per month', link: 'https://www.gov.uk/universal-credit' },
-    { icon: '🔥', iconClass: 'orange', title: 'Warm Home Discount', desc: 'A one-off £150 discount applied directly to your electricity bill if you are on a low income.', amount: '£150', period: 'per year', link: 'https://www.gov.uk/the-warm-home-discount-scheme' },
-    { icon: '🏠', iconClass: 'blue', title: 'Council Tax Support', desc: 'Your local council may reduce or write off your council tax bill based on your income.', amount: 'Up to 100% off', period: 'council tax', link: 'https://www.gov.uk/council-tax-reduction' },
-    { icon: '🦷', iconClass: 'gold', title: 'Free NHS Dental Treatment', desc: 'If you are on Universal Credit or certain other benefits you are entitled to free dental care.', amount: '£25+', period: 'per treatment', link: 'https://www.gov.uk/help-nhs-costs' },
-    { icon: '🍎', iconClass: 'green', title: 'Free School Meals', desc: 'If you have children and are on certain benefits your children may be entitled to free school meals.', amount: '£2.65', period: 'per child per day', link: 'https://www.gov.uk/apply-free-school-meals' },
+    { icon:'💷', title:'Universal Credit', desc:'A monthly payment to help with living costs if you are on a low income or out of work.', amount:'Up to £1,229', period:'per month', annual:8748, docs:['National Insurance number','Bank details','Proof of identity','Rent agreement','Payslips'] },
+    { icon:'🔥', title:'Warm Home Discount', desc:'A one-off £150 discount applied directly to your electricity bill.', amount:'£150', period:'per year', annual:150, docs:['No application if automatic','Or contact your energy supplier'] },
+    { icon:'🏠', title:'Council Tax Support', desc:'Your local council may reduce or write off your council tax bill based on your income.', amount:'Up to 100% off', period:'council tax', annual:1800, docs:['Council tax bill','Proof of income','Bank statements'] },
+    { icon:'🍎', title:'Free School Meals', desc:'If you have children and are on certain benefits they may be entitled to free school meals.', amount:'£2.65', period:'per child per day', annual:503, docs:['Proof of qualifying benefit','Child school details'] },
   ],
   single_parent: [
-    { icon: '👶', iconClass: 'orange', title: 'Child Benefit', desc: 'A regular payment for every child you are responsible for under 16.', amount: '£25.60', period: 'per week first child', link: 'https://www.gov.uk/child-benefit' },
-    { icon: '🧒', iconClass: 'green', title: 'Child Tax Credit', desc: 'Extra money for each child if you are on a low income and responsible for at least one child.', amount: 'Up to £3,455', period: 'per year per child', link: 'https://www.gov.uk/child-tax-credit' },
-    { icon: '🏫', iconClass: 'blue', title: 'Free Childcare Hours', desc: '15-30 hours of free childcare per week for children aged 3-4.', amount: 'Up to 30 hrs', period: 'per week free', link: 'https://www.gov.uk/free-childcare-citizens-of-other-countries' },
-    { icon: '💰', iconClass: 'purple', title: 'Child Maintenance', desc: 'The other parent has a legal obligation to contribute financially. Use the Child Maintenance Service.', amount: 'Calculated on income', period: 'of other parent', link: 'https://www.gov.uk/child-maintenance-service' },
+    { icon:'👶', title:'Child Benefit', desc:'A regular payment for every child you are responsible for under 16.', amount:'£25.60', period:'per week', annual:1331, docs:["Child's birth certificate",'National Insurance number','Bank details'] },
+    { icon:'🧒', title:'Child Tax Credit', desc:'Extra money for each child if you are on a low income.', amount:'Up to £3,455', period:'per year', annual:3455, docs:['National Insurance number','Income details','Child details'] },
+    { icon:'🏫', title:'Free Childcare Hours', desc:'15-30 hours of free childcare per week for children aged 3-4.', amount:'Up to 30 hrs', period:'per week free', annual:6000, docs:['National Insurance number','Child details','Childcare provider details'] },
+    { icon:'💰', title:'Child Maintenance', desc:'The other parent has a legal obligation to contribute financially to raising your child.', amount:'Varies', period:'by income', annual:0, docs:['Other parent details','Child details'] },
   ],
   elderly: [
-    { icon: '🌡️', iconClass: 'orange', title: 'Winter Fuel Payment', desc: 'An annual payment to help with heating costs for people over 66.', amount: '£200 - £300', period: 'per year', link: 'https://www.gov.uk/winter-fuel-payment' },
-    { icon: '🚌', iconClass: 'green', title: 'Free Bus Pass', desc: 'Free travel on local buses across England if you are over State Pension age.', amount: 'Free travel', period: 'nationwide', link: 'https://www.gov.uk/apply-for-elderly-person-bus-pass' },
-    { icon: '💰', iconClass: 'gold', title: 'Pension Credit', desc: 'A top-up to your weekly income if you are over State Pension age and on a low income.', amount: 'Up to £218', period: 'per week', link: 'https://www.gov.uk/pension-credit' },
-    { icon: '🏠', iconClass: 'blue', title: 'Attendance Allowance', desc: 'A tax-free payment if you are over State Pension age and need help with personal care.', amount: 'Up to £108.55', period: 'per week', link: 'https://www.gov.uk/attendance-allowance' },
+    { icon:'🌡️', title:'Winter Fuel Payment', desc:'An annual payment to help with heating costs for people over 66.', amount:'£200-£300', period:'per year', annual:250, docs:['Usually automatic if eligible','National Insurance number'] },
+    { icon:'🚌', title:'Free Bus Pass', desc:'Free travel on local buses across England if you are over State Pension age.', amount:'Free travel', period:'nationwide', annual:500, docs:['Proof of age','Proof of address','Passport photo'] },
+    { icon:'💰', title:'Pension Credit', desc:'A top-up to your weekly income if you are over State Pension age and on a low income. Massively underclaimed.', amount:'Up to £218', period:'per week', annual:11336, docs:['National Insurance number','Bank details','Pension statements','Savings details'] },
+    { icon:'🏠', title:'Attendance Allowance', desc:'A tax-free payment if you are over State Pension age and need help with personal care.', amount:'Up to £108.55', period:'per week', annual:5645, docs:['Details of condition','GP contact details','Bank details'] },
   ],
   unemployed: [
-    { icon: '💼', iconClass: 'blue', title: 'Universal Credit', desc: 'Monthly support while you look for work or increase your earnings.', amount: 'Up to £1,229', period: 'per month', link: 'https://www.gov.uk/universal-credit' },
-    { icon: '📚', iconClass: 'green', title: 'Free Retraining Courses', desc: 'Skills Bootcamps and free Level 3 courses to help you retrain for a new career at no cost.', amount: 'Fully funded', period: 'training', link: 'https://www.gov.uk/guidance/free-courses-for-jobs' },
-    { icon: '🏠', iconClass: 'orange', title: 'Housing Benefit', desc: 'Help with rent if you are on a low income or claiming Universal Credit.', amount: 'Varies by area', period: 'monthly', link: 'https://www.gov.uk/housing-benefit' },
+    { icon:'💼', title:'Universal Credit', desc:'Monthly support while you look for work. Apply the day you lose your job.', amount:'Up to £1,229', period:'per month', annual:8748, docs:['National Insurance number','Bank details','Proof of identity'] },
+    { icon:'📚', title:'Free Retraining Courses', desc:'Government Skills Bootcamps and free Level 3 courses to help you retrain at no cost.', amount:'Fully funded', period:'training', annual:2000, docs:['National Insurance number','Course application'] },
   ],
   ill: [
-    { icon: '💊', iconClass: 'green', title: 'Free Prescriptions', desc: 'If you have a specific long-term condition you may be entitled to free prescriptions for life.', amount: '£9.90', period: 'per prescription saved', link: 'https://www.gov.uk/prescription-costs' },
-    { icon: '💰', iconClass: 'blue', title: 'Employment Support Allowance', desc: 'Financial support if you are unable to work due to illness or disability.', amount: 'Up to £138.20', period: 'per week', link: 'https://www.gov.uk/employment-support-allowance' },
-    { icon: '🚗', iconClass: 'orange', title: 'NHS Hospital Travel Costs', desc: 'If you are on a low income you may be able to claim back travel costs to hospital appointments.', amount: 'Full reimbursement', period: 'per trip', link: 'https://www.gov.uk/help-with-hospital-travel-costs' },
+    { icon:'💊', title:'Free Prescriptions', desc:'If you have a specific long-term condition you may be entitled to free prescriptions for life with a Medical Exemption Certificate.', amount:'£9.90', period:'per prescription saved', annual:240, docs:['FP92A form from your GP'] },
+    { icon:'💰', title:'Employment Support Allowance', desc:'Financial support if you are unable to work due to illness or disability.', amount:'Up to £138.20', period:'per week', annual:7186, docs:['National Insurance number','Fit note from GP','Bank details'] },
   ],
   student: [
-    { icon: '🎓', iconClass: 'purple', title: 'Maintenance Loan', desc: 'Financial support to cover living costs while you study, based on your household income.', amount: 'Up to £13,022', period: 'per year', link: 'https://www.gov.uk/student-finance' },
-    { icon: '🍎', iconClass: 'green', title: 'Council Tax Exemption', desc: 'Full-time students are exempt from paying council tax.', amount: '£1,800+', period: 'per year saved', link: 'https://www.gov.uk/council-tax/who-has-to-pay' },
+    { icon:'🎓', title:'Maintenance Loan', desc:'Financial support to cover living costs while you study, based on household income.', amount:'Up to £13,022', period:'per year', annual:13022, docs:['National Insurance number','University offer letter','Household income details'] },
+    { icon:'🍎', title:'Council Tax Exemption', desc:'Full-time students are exempt from paying council tax — a significant saving.', amount:'£1,800+', period:'per year saved', annual:1800, docs:['Proof of full-time student status','Council tax bill'] },
   ]
 };
 
-function buildEntitlementsFromAnswers(savedAnswers) {
-  const situations = savedAnswers['situation'] || [];
-  let items = [];
+// ── BUILD ENTITLEMENTS FROM ANSWERS
+function buildItems(answers) {
+  const situations = answers.situation || [];
+  const allSits = [...new Set([...situations, 'low_income'])];
   const seen = new Set();
-  const allSituations = [...situations, 'low_income'];
-  allSituations.forEach(sit => {
-    const ents = entitlementsDB[sit] || [];
-    ents.forEach(e => {
+  const items = [];
+  allSits.forEach(sit => {
+    (entDB[sit] || []).forEach(e => {
       if (!seen.has(e.title)) { seen.add(e.title); items.push(e); }
     });
   });
-  if (items.length < 4) {
-    (entitlementsDB['low_income'] || []).forEach(e => {
-      if (!seen.has(e.title)) { seen.add(e.title); items.push(e); }
-    });
-  }
-  return items;
+  return items.length >= 3 ? items : [...items, ...(entDB.low_income || []).filter(e => !seen.has(e.title))];
 }
 
-function estimateTotalFromItems(items) {
-  const ranges = { '500':500,'81.90':4259,'184.30':9584,'150':150,'200':200,'300':300,'25.60':1331,'218':11336,'108.55':5645,'138.20':7186 };
-  let total = 0;
-  items.forEach(item => {
-    Object.keys(ranges).forEach(k => { if (item.amount.includes(k)) total += ranges[k]; });
+// ── CALCULATE TOTAL
+function calcTotal(items) {
+  const total = items.reduce((sum, item) => sum + (item.annual || 0), 0);
+  return total > 0 ? '£' + total.toLocaleString('en-GB') + ' per year' : '£2,400+ per year';
+}
+
+// ── RENDER REPORT
+function renderReport(items) {
+  const total = calcTotal(items);
+
+  // Show total
+  document.getElementById('total-amount').textContent = total;
+  document.getElementById('total-box').style.display = 'block';
+
+  // Render entitlement cards
+  const list = document.getElementById('ent-list');
+  list.innerHTML = items.map(item => {
+    const annualStr = item.annual > 0 ? '£' + item.annual.toLocaleString('en-GB') + ' estimated per year' : 'Value varies by circumstance';
+    const docsHtml = (item.docs || []).map(d => `<span class="ent-doc">${d}</span>`).join('');
+    return `
+      <div class="ent-card">
+        <div class="ent-top">
+          <div class="ent-icon">${item.icon}</div>
+          <div class="ent-name">${item.title}</div>
+          <div class="ent-amount">
+            <strong>${item.amount}</strong>
+            <span>${item.period}</span>
+          </div>
+        </div>
+        <div class="ent-annual">
+          <span>💰 Estimated annual value</span>
+          <strong>${annualStr}</strong>
+        </div>
+        <div class="ent-desc">${item.desc}</div>
+        <div class="ent-docs">
+          <span class="ent-docs-label">Documents you'll need</span>
+          <div class="ent-docs-list">${docsHtml}</div>
+        </div>
+        <div class="ent-claim">How to claim → Search GOV.UK for "${item.title}" or call your local Jobcentre Plus</div>
+      </div>
+    `;
+  }).join('');
+
+  list.style.display = 'flex';
+
+  // Show buttons
+  document.getElementById('dl-btn').style.display = 'block';
+  document.getElementById('sub-offer').style.display = 'block';
+  document.getElementById('share-row').style.display = 'flex';
+
+  // Hide spinner
+  document.getElementById('spinner').style.display = 'none';
+}
+
+// ── DOWNLOAD (print)
+function downloadReport() {
+  window.print();
+}
+
+// ── SHARE
+function shareWA() {
+  const text = encodeURIComponent("I just found out everything I'm entitled to claim in the UK — it took 2 minutes. Check yours free: https://whatyoureowed.com");
+  window.open('https://wa.me/?text=' + text, '_blank');
+}
+
+function copyLink() {
+  const btn = document.getElementById('copy-btn');
+  navigator.clipboard.writeText('https://whatyoureowed.com').then(() => {
+    btn.textContent = '✓ Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '🔗 Copy Link'; btn.classList.remove('copied'); }, 2500);
   });
-  if (total < 500) total = 1200;
-  return '£' + Math.round(total / 100) * 100 + '+';
 }
 
-// ── AUTO-LOAD from Supabase if session ID in URL
-window.addEventListener('load', async () => {
+// ── LOAD SESSION FROM SUPABASE OR USE DEMO
+async function loadAndRender() {
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session') || params.get('client_reference_id');
 
   if (sessionId) {
-    // Load answers from Supabase
     try {
-      const res = await fetch(SUPABASE_URL + '/rest/v1/sessions?id=eq.' + sessionId + '&select=answers,email', {
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY
-        }
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/sessions?id=eq.${sessionId}&select=answers`, {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
       });
       const data = await res.json();
-      if (data && data.length > 0) {
-        const savedAnswers = data[0].answers;
-        const savedEmail = data[0].email || '';
-        const items = buildEntitlementsFromAnswers(savedAnswers);
-        const total = estimateTotalFromItems(items);
-
-        // Store in session for PDF generator
-        try {
-          sessionStorage.setItem('wyo_entitlements', JSON.stringify(items));
-          sessionStorage.setItem('wyo_total', total);
-        } catch(e) {}
-
-        // Pre-fill email if we have it
-        if (savedEmail) {
-          const emailInput = document.getElementById('user-email');
-          if (emailInput) {
-            emailInput.value = savedEmail;
-            checkEmail();
-          }
-        } else {
-          checkEmail();
-        }
-
-        // Auto-generate report
-        buildPDFTemplate(savedEmail);
-        if (savedEmail) {
-          setTimeout(generateReport, 800);
-        } else {
-          setTimeout(showPreviewAndActions, 500);
-        }
+      if (data && data.length > 0 && data[0].answers) {
+        renderReport(buildItems(data[0].answers));
         return;
       }
     } catch(e) {
-      console.error('Failed to load session:', e);
+      console.log('Session load failed, using demo data');
     }
   }
 
-  // Fallback - use demo data
-  const items = getEntitlements();
-  if (items && items.length > 0) {
-    buildPDFTemplate('');
-  }
-});
+  // Demo / fallback data
+  renderReport(buildItems({ situation: ['carer', 'low_income'] }));
+}
+
+// ── START
+window.addEventListener('load', loadAndRender);
 </script>
 
 </body>
