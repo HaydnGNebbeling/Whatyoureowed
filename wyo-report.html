@@ -332,8 +332,13 @@ function copyLink() {
 
 // ── LOAD SESSION FROM SUPABASE OR USE DEMO
 async function loadAndRender() {
+  // Try URL params first, then localStorage
   const params = new URLSearchParams(window.location.search);
-  const sessionId = params.get('session') || params.get('client_reference_id');
+  let sessionId = params.get('session') || params.get('client_reference_id');
+
+  if (!sessionId) {
+    try { sessionId = localStorage.getItem('wyo_session'); } catch(e) {}
+  }
 
   if (sessionId) {
     try {
@@ -342,6 +347,8 @@ async function loadAndRender() {
       });
       const data = await res.json();
       if (data && data.length > 0 && data[0].answers) {
+        // Clear localStorage after successful load
+        try { localStorage.removeItem('wyo_session'); } catch(e) {}
         renderReport(buildItems(data[0].answers));
         return;
       }

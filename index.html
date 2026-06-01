@@ -1524,7 +1524,9 @@ function showPaywall() {
 
 function unlockResults() {
   const sessionId = window._sessionId || generateUUID();
-  window.location.href = 'https://buy.stripe.com/00w7sN61h1ZH7lN6CM53O00?client_reference_id=' + sessionId;
+  // Save to localStorage so we can retrieve after Stripe redirect
+  try { localStorage.setItem('wyo_session', sessionId); } catch(e) {}
+  window.location.href = 'https://buy.stripe.com/00w7sN61h1ZH7lN6CM53O00';
 }
 
 // ══════════════════════════════════════
