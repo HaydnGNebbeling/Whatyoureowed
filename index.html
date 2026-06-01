@@ -1104,16 +1104,7 @@
         <li><span class="tick">✓</span> Downloadable PDF to share with family or a support worker</li>
       </ul>
 
-      <label class="also-subscribe">
-        <input type="checkbox" id="subscribe-check">
-        <div class="also-subscribe-text">
-          <strong>Add monthly updates — £4.99/month</strong>
-          <span>Get notified when new entitlements apply to you or legislation changes that affects your report.</span>
-        </div>
-        <div class="also-subscribe-price">+ £4.99</div>
-      </label>
 
-      <br>
       <button class="btn-pay" onclick="unlockResults()">Unlock My Full Report →</button>
       <p class="secure-note">🔒 Secure payment · Instant access · No hidden fees</p>
     </div>
@@ -1211,37 +1202,37 @@ const questions = [
 // Entitlements database
 const entitlementsDB = {
   pregnant: [
-    { icon: '🤰', iconClass: 'orange', title: 'Sure Start Maternity Grant', desc: 'A one-off payment to help with the costs of having a baby. You may be eligible if you\'re on certain benefits.', amount: '£500', period: 'one-off', link: 'https://www.gov.uk/sure-start-maternity-grant' },
-    { icon: '💊', iconClass: 'green', title: 'Free NHS Prescriptions', desc: 'All prescriptions are free during pregnancy and for 12 months after your baby is born.', amount: '£9.90', period: 'per prescription', link: 'https://www.gov.uk/help-nhs-costs' },
+    { guideId: 'sure-start', icon: '🤰', iconClass: 'orange', title: 'Sure Start Maternity Grant', desc: 'A one-off payment to help with the costs of having a baby. You may be eligible if you\'re on certain benefits.', amount: '£500', period: 'one-off', link: 'https://www.gov.uk/sure-start-maternity-grant' },
+    { guideId: 'free-prescriptions', icon: '💊', iconClass: 'green', title: 'Free NHS Prescriptions', desc: 'All prescriptions are free during pregnancy and for 12 months after your baby is born.', amount: '£9.90', period: 'per prescription', link: 'https://www.gov.uk/help-nhs-costs' },
     { icon: '🦷', iconClass: 'blue', title: 'Free NHS Dental Treatment', desc: 'Free dental care throughout pregnancy and until your baby\'s first birthday.', amount: '£25+', period: 'per treatment', link: 'https://www.gov.uk/help-nhs-costs' },
     { icon: '🥛', iconClass: 'gold', title: 'Healthy Start Vouchers', desc: 'Weekly vouchers to spend on milk, fruit, vegetables and vitamins at participating stores.', amount: '£8.50', period: 'per week', link: 'https://www.healthystart.nhs.uk' },
   ],
   carer: [
-    { icon: '💰', iconClass: 'green', title: "Carer's Allowance", desc: "A weekly payment if you spend at least 35 hours a week caring for someone with a disability. One of the most commonly unclaimed benefits in the UK.", amount: '£81.90', period: 'per week', link: 'https://www.gov.uk/carers-allowance' },
+    { guideId: 'carers-allowance', icon: '💰', iconClass: 'green', title: "Carer's Allowance", desc: "A weekly payment if you spend at least 35 hours a week caring for someone with a disability. One of the most commonly unclaimed benefits in the UK.", amount: '£81.90', period: 'per week', link: 'https://www.gov.uk/carers-allowance' },
     { icon: '🏥', iconClass: 'blue', title: "Carer's Credit", desc: "Protects your State Pension if you're not paying National Insurance because you're caring for someone.", amount: 'Pension protection', period: 'ongoing', link: 'https://www.gov.uk/carers-credit' },
     { icon: '😮‍💨', iconClass: 'purple', title: 'Respite Care Support', desc: 'Local councils must assess your needs as a carer and may provide respite care — time off from caring.', amount: 'Varies', period: 'by assessment', link: 'https://www.gov.uk/support-for-carers' },
     { icon: '🎟️', iconClass: 'orange', title: 'Carer Premium on Benefits', desc: 'An additional amount added to certain benefits if you receive Carer\'s Allowance.', amount: '£45.60', period: 'per week extra', link: 'https://www.gov.uk/carers-allowance/eligibility' },
   ],
   disabled: [
-    { icon: '♿', iconClass: 'blue', title: 'Personal Independence Payment (PIP)', desc: 'Helps with the extra costs of living with a long-term health condition or disability. One of the most valuable and most unclaimed benefits.', amount: 'Up to £184.30', period: 'per week', link: 'https://www.gov.uk/pip' },
+    { guideId: 'pip', icon: '♿', iconClass: 'blue', title: 'Personal Independence Payment (PIP)', desc: 'Helps with the extra costs of living with a long-term health condition or disability. One of the most valuable and most unclaimed benefits.', amount: 'Up to £184.30', period: 'per week', link: 'https://www.gov.uk/pip' },
     { icon: '🚗', iconClass: 'green', title: 'Blue Badge Scheme', desc: 'Allows you to park closer to where you need to go. Applies to a wide range of conditions — more people qualify than realise.', amount: 'Parking rights', period: 'nationwide', link: 'https://www.gov.uk/apply-blue-badge' },
     { icon: '💼', iconClass: 'gold', title: 'Access to Work Grant', desc: 'Pays for practical support to help you start or stay in work — including transport, equipment, or a support worker.', amount: 'Up to £66,000', period: 'per year', link: 'https://www.gov.uk/access-to-work' },
     { icon: '🏠', iconClass: 'orange', title: 'Disabled Facilities Grant', desc: 'Money to make adaptations to your home — such as a ramp, stairlift or accessible bathroom.', amount: 'Up to £30,000', period: 'one-off', link: 'https://www.gov.uk/disabled-facilities-grants' },
   ],
   bereaved: [
-    { icon: '💔', iconClass: 'purple', title: 'Bereavement Support Payment', desc: 'A monthly payment for up to 18 months if your spouse or civil partner died and you were under State Pension age.', amount: 'Up to £3,500', period: 'total', link: 'https://www.gov.uk/bereavement-support-payment' },
+    { guideId: 'bereavement-support', icon: '💔', iconClass: 'purple', title: 'Bereavement Support Payment', desc: 'A monthly payment for up to 18 months if your spouse or civil partner died and you were under State Pension age.', amount: 'Up to £3,500', period: 'total', link: 'https://www.gov.uk/bereavement-support-payment' },
     { icon: '🏠', iconClass: 'blue', title: 'Council Tax Reduction', desc: 'If you now live alone following a bereavement, you may be entitled to a 25% reduction on your council tax.', amount: '25% off', period: 'council tax', link: 'https://www.gov.uk/council-tax/discounts-for-disabilities' },
     { icon: '💊', iconClass: 'green', title: 'Free Prescriptions if Low Income', desc: 'Following a bereavement your circumstances may now entitle you to free prescriptions and dental care.', amount: '£9.90', period: 'per prescription', link: 'https://www.gov.uk/help-nhs-costs' },
   ],
   low_income: [
-    { icon: '💷', iconClass: 'green', title: 'Universal Credit', desc: 'A monthly payment to help with living costs if you\'re on a low income or out of work. Replaces several older benefits.', amount: 'Up to £1,229', period: 'per month', link: 'https://www.gov.uk/universal-credit' },
+    { guideId: 'universal-credit', icon: '💷', iconClass: 'green', title: 'Universal Credit', desc: 'A monthly payment to help with living costs if you\'re on a low income or out of work. Replaces several older benefits.', amount: 'Up to £1,229', period: 'per month', link: 'https://www.gov.uk/universal-credit' },
     { icon: '🔥', iconClass: 'orange', title: 'Warm Home Discount', desc: 'A one-off £150 discount applied directly to your electricity bill if you\'re on a low income.', amount: '£150', period: 'per year', link: 'https://www.gov.uk/the-warm-home-discount-scheme' },
-    { icon: '🏠', iconClass: 'blue', title: 'Council Tax Support', desc: 'Your local council may reduce or write off your council tax bill entirely based on your income.', amount: 'Up to 100% off', period: 'council tax', link: 'https://www.gov.uk/council-tax-reduction' },
+    { guideId: 'council-tax-reduction', icon: '🏠', iconClass: 'blue', title: 'Council Tax Support', desc: 'Your local council may reduce or write off your council tax bill entirely based on your income.', amount: 'Up to 100% off', period: 'council tax', link: 'https://www.gov.uk/council-tax-reduction' },
     { icon: '🦷', iconClass: 'gold', title: 'Free NHS Dental Treatment', desc: 'If you\'re on Universal Credit, Pension Credit or certain other benefits you\'re entitled to free dental care.', amount: '£25+', period: 'per treatment', link: 'https://www.gov.uk/help-nhs-costs' },
     { icon: '🍎', iconClass: 'green', title: 'Free School Meals', desc: 'If you have children and are on certain benefits, your children may be entitled to free school meals.', amount: '£2.65', period: 'per child per day', link: 'https://www.gov.uk/apply-free-school-meals' },
   ],
   single_parent: [
-    { icon: '👶', iconClass: 'orange', title: 'Child Benefit', desc: 'A regular payment for every child you\'re responsible for under 16 (or under 20 if in education or training).', amount: '£25.60', period: 'per week, first child', link: 'https://www.gov.uk/child-benefit' },
+    { guideId: 'child-benefit', icon: '👶', iconClass: 'orange', title: 'Child Benefit', desc: 'A regular payment for every child you\'re responsible for under 16 (or under 20 if in education or training).', amount: '£25.60', period: 'per week, first child', link: 'https://www.gov.uk/child-benefit' },
     { icon: '🧒', iconClass: 'green', title: 'Child Tax Credit', desc: 'Extra money for each child if you\'re on a low income and responsible for at least one child.', amount: 'Up to £3,455', period: 'per year per child', link: 'https://www.gov.uk/child-tax-credit' },
     { icon: '🏫', iconClass: 'blue', title: 'Free Childcare Hours', desc: '15-30 hours of free childcare per week for children aged 3-4, and some younger children.', amount: 'Up to 30 hrs', period: 'per week free', link: 'https://www.gov.uk/free-childcare-citizens-of-other-countries' },
     { icon: '💰', iconClass: 'purple', title: 'Child Maintenance', desc: 'If you\'re a single parent the other parent has a legal obligation to contribute financially. Use the Child Maintenance Service if needed.', amount: 'Calculated on income', period: 'of other parent', link: 'https://www.gov.uk/child-maintenance-service' },
@@ -1249,8 +1240,8 @@ const entitlementsDB = {
   elderly: [
     { icon: '🌡️', iconClass: 'orange', title: 'Winter Fuel Payment', desc: 'An annual payment to help with heating costs. Most people over 66 are eligible.', amount: '£200 - £300', period: 'per year', link: 'https://www.gov.uk/winter-fuel-payment' },
     { icon: '🚌', iconClass: 'green', title: 'Free Bus Pass', desc: 'Free travel on local buses across England if you\'re over 60 in London or State Pension age elsewhere.', amount: 'Free travel', period: 'nationwide', link: 'https://www.gov.uk/apply-for-elderly-person-bus-pass' },
-    { icon: '💰', iconClass: 'gold', title: 'Pension Credit', desc: 'A top-up to your weekly income if you\'re over State Pension age and on a low income. Massively underclaimed.', amount: 'Up to £218', period: 'per week', link: 'https://www.gov.uk/pension-credit' },
-    { icon: '🏠', iconClass: 'blue', title: 'Attendance Allowance', desc: 'A tax-free payment if you\'re over State Pension age and need help with personal care due to illness or disability.', amount: 'Up to £108.55', period: 'per week', link: 'https://www.gov.uk/attendance-allowance' },
+    { guideId: 'pension-credit', icon: '💰', iconClass: 'gold', title: 'Pension Credit', desc: 'A top-up to your weekly income if you\'re over State Pension age and on a low income. Massively underclaimed.', amount: 'Up to £218', period: 'per week', link: 'https://www.gov.uk/pension-credit' },
+    { guideId: 'attendance-allowance', icon: '🏠', iconClass: 'blue', title: 'Attendance Allowance', desc: 'A tax-free payment if you\'re over State Pension age and need help with personal care due to illness or disability.', amount: 'Up to £108.55', period: 'per week', link: 'https://www.gov.uk/attendance-allowance' },
   ],
   unemployed: [
     { icon: '💼', iconClass: 'blue', title: 'Universal Credit', desc: 'Monthly support while you look for work or increase your earnings. Must apply online through GOV.UK.', amount: 'Up to £1,229', period: 'per month', link: 'https://www.gov.uk/universal-credit' },
@@ -1532,19 +1523,8 @@ function showPaywall() {
 }
 
 function unlockResults() {
-  const subscribeChecked = document.getElementById('subscribe-check').checked;
   const sessionId = window._sessionId || generateUUID();
-
-  // Build return URL with session ID so results load automatically after payment
-  const returnBase = window.location.origin + window.location.pathname.replace('whatyoureowed.html','') + 'wyo-report.html';
-  const returnUrl = returnBase + '?session=' + sessionId;
-
-  // Update Stripe payment links with session return
-  if (subscribeChecked) {
-    window.location.href = 'https://buy.stripe.com/00w00lcpFbAhdKbd1a53O01?client_reference_id=' + sessionId;
-  } else {
-    window.location.href = 'https://buy.stripe.com/00w7sN61h1ZH7lN6CM53O00?client_reference_id=' + sessionId;
-  }
+  window.location.href = 'https://buy.stripe.com/00w7sN61h1ZH7lN6CM53O00?client_reference_id=' + sessionId;
 }
 
 // ══════════════════════════════════════
@@ -1563,8 +1543,8 @@ function showResults() {
       <div class="ent-body">
         <h3>${item.title}</h3>
         <p>${item.desc}</p>
-        <a class="ent-how" href="${item.link}" target="_blank" rel="noopener">
-          How to claim →
+        <a class="ent-how" href="wyo-guides.html?guide=${item.guideId || ''}" >
+          See full claim guide →
         </a>
       </div>
       <div class="ent-amount">
