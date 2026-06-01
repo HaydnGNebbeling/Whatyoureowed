@@ -1366,7 +1366,7 @@ function prevQuestion() {
 // SUPABASE CONFIG
 // ══════════════════════════════════════
 const SUPABASE_URL = 'https://nbuiygvfdxkeoqzgddxz.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_S_g4JkIsE_sYTjM3x-beXA_H44vqDzD';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5idWl5Z3ZmZHhrZW9xemdkZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxNjQwNzcsImV4cCI6MjA5NTc0MDA3N30.zTVseFnhFDmVQ18VZtzc6UXt99ixBwK6gQJf7LQ-CV0';
 
 async function saveSession(sessionId, answersData) {
   try {
@@ -1438,9 +1438,17 @@ function runCalculating() {
     }, i * 600 + 400);
   });
 
-  // Generate session ID and save answers to Supabase
+  // Generate session ID, save to localStorage AND Supabase
   const sessionId = generateUUID();
   window._sessionId = sessionId;
+  
+  // Save to localStorage as backup
+  try { 
+    localStorage.setItem('wyo_session', sessionId);
+    localStorage.setItem('wyo_answers', JSON.stringify(answers));
+  } catch(e) {}
+  
+  // Save to Supabase
   saveSession(sessionId, answers);
 
   setTimeout(showPaywall, steps.length * 600 + 600);

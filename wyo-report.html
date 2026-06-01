@@ -186,7 +186,7 @@
 <script>
 // ── CONFIG
 const SUPABASE_URL = 'https://nbuiygvfdxkeoqzgddxz.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_S_g4JkIsE_sYTjM3x-beXA_H44vqDzD';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5idWl5Z3ZmZHhrZW9xemdkZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxNjQwNzcsImV4cCI6MjA5NTc0MDA3N30.zTVseFnhFDmVQ18VZtzc6UXt99ixBwK6gQJf7LQ-CV0';
 
 // ── ENTITLEMENTS DATABASE
 const entDB = {
@@ -332,33 +332,45 @@ function copyLink() {
 
 // ── LOAD SESSION FROM SUPABASE OR USE DEMO
 async function loadAndRender() {
-  // Try URL params first, then localStorage
-  const params = new URLSearchParams(window.location.search);
-  let sessionId = params.get('session') || params.get('client_reference_id');
-
-  if (!sessionId) {
-    try { sessionId = localStorage.getItem('wyo_session'); } catch(e) {}
-  }
-
-  if (sessionId) {
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/sessions?id=eq.${sessionId}&select=answers`, {
-        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+  // Step 1: Try Supabase with session ID from localStorage
+  let answers = null;
+  
+  try {
+    const sessionId = localStorage.getItem('wyo_session');
+    if (sessionId) {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/sessions?id=eq.' + sessionId + '&select=answers', {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY
+        }
       });
       const data = await res.json();
       if (data && data.length > 0 && data[0].answers) {
-        // Clear localStorage after successful load
-        try { localStorage.removeItem('wyo_session'); } catch(e) {}
-        renderReport(buildItems(data[0].answers));
-        return;
+        answers = data[0].answers;
+        localStorage.removeItem('wyo_session');
       }
-    } catch(e) {
-      console.log('Session load failed, using demo data');
     }
+  } catch(e) {
+    console.log('Supabase lookup failed:', e);
   }
 
-  // Demo / fallback data
-  renderReport(buildItems({ situation: ['carer', 'low_income'] }));
+  // Step 2: Fall back to answers saved directly in localStorage
+  if (!answers) {
+    try {
+      const stored = localStorage.getItem('wyo_answers');
+      if (stored) {
+        answers = JSON.parse(stored);
+        localStorage.removeItem('wyo_answers');
+      }
+    } catch(e) {}
+  }
+
+  // Step 3: Render with answers or demo data
+  if (answers && answers.situation && answers.situation.length > 0) {
+    renderReport(buildItems(answers));
+  } else {
+    renderReport(buildItems({ situation: ['carer', 'low_income'] }));
+  }
 }
 
 // ── START
